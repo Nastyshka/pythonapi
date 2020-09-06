@@ -1,0 +1,10 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block titlem %}
+<title> Python form </title>
+{% endblock %}
+{% block content %}
+    <div> 
+        Please wait, one video is in progress. Come back in {{ timeToWait }} hours
+    </div>
+{% endblock%}
