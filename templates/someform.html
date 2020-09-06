@@ -25,9 +25,8 @@
 
 			<div class="custom-file form-group">
 				<input type="file" name="theFile" label="theFile" class="custom-file-input" id="inputGroupFile01">
-				<label class="custom-file-label" for="inputGroupFile01">Choose file</label>
 				{% for error in form.theFile.errors %}
-				<small>{{ error }}</small>
+				<small class="text-danger">{{ error }}</small>
 				{% endfor %}
 				</imput>
 			</div>
