@@ -1,0 +1,3 @@
+pip install Flask-WTF
+pip install flask-uploads
+ip install flask-bootstrap
