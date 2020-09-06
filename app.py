@@ -7,7 +7,6 @@ from flask_wtf.file import FileField, FileRequired, FileAllowed
 from flask_uploads import configure_uploads, IMAGES, UploadSet
 from flask_bootstrap import Bootstrap
 from datetime import datetime
-from subprocess import call
 
 import os
 import threading
@@ -19,12 +18,12 @@ app = Flask(__name__)
 Bootstrap(app)
 
 app.config['SECRET_KEY'] = 'do not tell anyone' 
-app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024  # 10MB max-limit.
+app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 10MB max-limit.
 
 ALLOWED_SITES = ['porn.com', 'www.moreporn.com', 'http://localhost:5000'] #Add sites here
-CELEB_CHOISES = [('Very famous lady','Very famous lady'), ('Famous lady', 'Famous lady'), ('Someone','Someone')] #Add celebrities here
-VIDEO_EXT = ['WEBM', 'MP4', 'AVI', 'csv']
-UPLOADS_FOLDER = 'uploads'
+CELEB_CHOISES = [('1','Daisy Ridley'), ('2', 'Emma Stone'), ('3','Gal Gadot'), ('4', 'K AOA CHANMI')] #Add celebrities here
+VIDEO_EXT = ['WEBM', 'MP4', 'mp4', 'AVI', 'csv']
+UPLOADS_FOLDER = 'C:\\DeepFun_v2\\DeepFaceLab_NVIDIA\\workspace\\newData_dst'
 
 videoIsInProgress = False #Can upload a new video? 
 lastVidStarted = datetime.now() #When tha last video processig started
@@ -55,7 +54,8 @@ def someForm():
             #Save the video file
             res = saveTheFile(form)
             #Start processing
-            threading.Thread(target=doFile(form.theceleb.data)).start()
+            doFile(form.theceleb.data)
+            #threading.Thread(target = doFile(form.theceleb.data)).start()
         elif form.theURL.data != None :  
             if form.theStartMin.data != None and form.theStartSec.data != None and form.theEndMin.data != None and form.theEndSec.data != None :
                 #Run downloader and cutter
