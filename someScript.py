@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(1, 'C:\DeepFun_v2\DeepFaceLab_NVIDIA')
+sys.path.insert(1, 'C:/DeepFun_v2/DeepFaceLab_NVIDIA')
 import subprocess
 from DFM_SET_CELEBApi import runWithChosenCeleb
 
@@ -12,8 +12,8 @@ def doURLTime (celeb, vidUrl, cutStartMin, cutStartSec, cutEndMin, cutEndSec) :
 
 def doFile (celeb) :
     print ('>>> doFile! ' + celeb )
-    #subprocess.Popen("C://DeepFun_v2//DeepFaceLab_NVIDIA//DFM_SET_CELEB.py",creationflags=subprocess.CREATE_NEW_CONSOLE)
-    #runWithChosenCeleb(celeb)
+    #subprocess.Popen("C:/Users/rober/Desktop/pythonapi/pythonapi/3.bat",creationflags=subprocess.CREATE_NEW_CONSOLE)
+    runWithChosenCeleb(celeb)
 
 def doFileTime (celeb, cutStartMin, cutStartSec, cutEndMin, cutEndSec) :
     print ('>>> doFileTime! ' + celeb )
