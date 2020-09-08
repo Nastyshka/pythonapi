@@ -113,7 +113,7 @@ def videoIsDone():
     videoIsREadyToCheck = True
     return 'Nice! the video is done'
 
-@app.route('/setStep/<stepNo>')
+@app.route('/setstep/<stepNo>')
 def updateCurrentStep (stepNo = 0):
     print('>>> current step is set ' + stepNo)
     global currentProcessStep
