@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField
+from wtforms import StringField, SelectField, TextAreaField, SelectMultipleField
 from wtforms.fields.html5 import URLField, TimeField, DecimalField, IntegerField
 from wtforms.validators import DataRequired, Email, URL, NumberRange, Optional
 from flask_wtf.file import FileField, FileRequired, FileAllowed
@@ -20,13 +20,16 @@ Bootstrap(app)
 app.config['SECRET_KEY'] = 'do not tell anyone' 
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 10MB max-limit.
 
-ALLOWED_SITES = ['porn.com', 'www.moreporn.com', 'http://localhost:5000'] #Add sites here
 CELEB_CHOISES = [('1','Daisy Ridley'), ('2', 'Emma Stone'), ('3','Gal Gadot'), ('4', 'K AOA CHANMI')] #Add celebrities here
+TAGS_CHOISES = [('1','tag 1'), ('2','tag 2'), ('3','tag 3')]
+ALLOWED_SITES = ['porn.com', 'www.moreporn.com', 'http://localhost:5000'] #Add sites here
 VIDEO_EXT = ['WEBM', 'MP4', 'mp4', 'AVI', 'csv']
-UPLOADS_FOLDER = 'C:\\DeepFun_v2\\DeepFaceLab_NVIDIA\\workspace\\newData_dst'
+#UPLOADS_FOLDER = 'C:\\DeepFun_v2\\DeepFaceLab_NVIDIA\\workspace\\newData_dst'
+UPLOADS_FOLDER = 'uploads'
 
 videoIsInProgress = False #Can upload a new video? 
 lastVidStarted = datetime.now() #When tha last video processig started
+currentProcessStep = 0;
 
 #The input form
 class SomeForm (FlaskForm):
@@ -37,7 +40,8 @@ class SomeForm (FlaskForm):
     theEndMin = IntegerField('End Min', validators=[Optional(),NumberRange(min=0, max=59)])
     theEndSec = IntegerField ('Start Sec', validators=[Optional(),NumberRange(min=0, max=59)])
     theFile = FileField('theFile', validators=[Optional(), FileAllowed(VIDEO_EXT, 'Bad File Type')])
-
+    theDesc = TextAreaField(u'Description', validators=[Optional()])
+    theTags = SelectMultipleField(u'Tags', choices=TAGS_CHOISES, validators=[Optional()])
 
 @app.route('/the_form', methods=['GET', 'POST'])
 def someForm():
@@ -71,10 +75,10 @@ def someForm():
         
         videoIsInProgress = True;
         lastVideoStarted  = datetime.now();
-        return 'nice! {} will be ready in 5 hours'.format(form.theceleb.data)
+        return 'nice! {} come back and check in 5 hours'.format(form.theceleb.data)
     if (videoIsInProgress) : 
-        timeLeft = datetime.now() - lastVideoStarted;
-        return render_template('videoIsInProgress.html', timeToWait = timeLeft )
+        global currentProcessStep
+        return render_template('videoIsInProgress.html', currStep = currentProcessStep)
     else :    
         return render_template('someform.html', form=form)
     
@@ -83,7 +87,16 @@ def someForm():
 def videoIsDone():
     global videoIsInProgress 
     videoIsInProgress = False
+    global currentProcessStep
+    currentProcessStep = 0
     return 'Nice! the video is done'
+
+@app.route('/setStep/<stepNo>')
+def updateCurrentStep (stepNo = 0):
+    print('>>> current step is set ' + stepNo)
+    global currentProcessStep
+    currentProcessStep = stepNo
+    return 'Current step was updated {}'.format(stepNo)
 
 @app.route('/')
 def index():
