@@ -1,7 +1,7 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, TextAreaField, SelectMultipleField
-from wtforms.fields.html5 import URLField, TimeField, DecimalField, IntegerField
+from wtforms.fields.html5 import URLField, TimeField, DecimalField, IntegerField, IntegerRangeField
 from wtforms.validators import DataRequired, Email, URL, NumberRange, Optional
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 from flask_uploads import configure_uploads, IMAGES, UploadSet
@@ -14,14 +14,14 @@ from werkzeug.utils import secure_filename
 from someScript import doFile, doURL, doFileTime, doURLTime
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 Bootstrap(app)
 
 app.config['SECRET_KEY'] = 'do not tell anyone' 
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 10MB max-limit.
 
 CELEB_CHOISES = [('1','Daisy Ridley'), ('2', 'Emma Stone'), ('3','Gal Gadot'), ('4', 'K AOA CHANMI')] #Add celebrities here
-TAGS_CHOISES = [('1','tag 1'), ('2','tag 2'), ('3','tag 3')]
+TAGS_CHOISES = [('tag 1','tag 1'), ('tag 2','tag 2'), ('tag 3','tag 3')]
 ALLOWED_SITES = ['porn.com', 'www.moreporn.com', 'http://localhost:5000'] #Add sites here
 VIDEO_EXT = ['WEBM', 'MP4', 'mp4', 'AVI', 'csv']
 #UPLOADS_FOLDER = 'C:\\DeepFun_v2\\DeepFaceLab_NVIDIA\\workspace\\newData_dst'
@@ -29,7 +29,8 @@ UPLOADS_FOLDER = 'uploads'
 
 videoIsInProgress = False #Can upload a new video? 
 lastVidStarted = datetime.now() #When tha last video processig started
-currentProcessStep = 0;
+currentProcessStep = 0
+videoIsREadyToCheck = False
 
 #The input form
 class SomeForm (FlaskForm):
@@ -43,10 +44,15 @@ class SomeForm (FlaskForm):
     theDesc = TextAreaField(u'Description', validators=[Optional()])
     theTags = SelectMultipleField(u'Tags', choices=TAGS_CHOISES, validators=[Optional()])
 
+class ResForm (FlaskForm):
+    theQuality = IntegerRangeField ('Is it good? ', default=3, validators=[Optional(),NumberRange(min=0, max=5)])
+
+@app.route('/', methods=['GET', 'POST'])
 @app.route('/the_form', methods=['GET', 'POST'])
 def someForm():
     global videoIsInProgress
     global lastVideoStarted
+    global currentProcessStep
 
     print(videoIsInProgress)
     form = SomeForm()
@@ -54,11 +60,13 @@ def someForm():
           if not allowed_site(form.theURL.data):
             form.theURL.errors.append("This site is not allowed") #Check allowed sites
     if form.validate_on_submit(): #If form is valid
+        print('>>> description > ' + form.theDesc.data); 
+        print(form.theTags.data)
         if form.theFile.data != None :
             #Save the video file
             res = saveTheFile(form)
             #Start processing
-            doFile(form.theceleb.data)
+            threading.Thread(target=doFile(form.theceleb.data))
             #threading.Thread(target = doFile(form.theceleb.data)).start()
         elif form.theURL.data != None :  
             if form.theStartMin.data != None and form.theStartSec.data != None and form.theEndMin.data != None and form.theEndSec.data != None :
@@ -73,22 +81,36 @@ def someForm():
         else :
             return 'Not enough data to start'
         
-        videoIsInProgress = True;
-        lastVideoStarted  = datetime.now();
+        videoIsInProgress = True
+        lastVideoStarted  = datetime.now()
+        currentProcessStep = 1
         return 'nice! {} come back and check in 5 hours'.format(form.theceleb.data)
     if (videoIsInProgress) : 
-        global currentProcessStep
         return render_template('videoIsInProgress.html', currStep = currentProcessStep)
+    elif (videoIsREadyToCheck == True):
+        return redirect(url_for('showRes'))
     else :    
         return render_template('someform.html', form=form)
     
-#When the video is done you can upload a new one 
+
+@app.route('/res', methods = ['GET', 'POST']) 
+def showRes():
+    rform = ResForm()
+    if rform.validate_on_submit():
+        print('>>> quality ' + rform.theQuality.data )
+        global videoIsREadyToCheck
+        videoIsREadyToCheck = False
+        return redirect(url_for('someForm'))
+    return render_template('result.html', form = rform)
+
 @app.route('/done')  
 def videoIsDone():
     global videoIsInProgress 
     videoIsInProgress = False
     global currentProcessStep
     currentProcessStep = 0
+    global videoIsREadyToCheck
+    videoIsREadyToCheck = True
     return 'Nice! the video is done'
 
 @app.route('/setStep/<stepNo>')
@@ -98,10 +120,6 @@ def updateCurrentStep (stepNo = 0):
     currentProcessStep = stepNo
     return 'Current step was updated {}'.format(stepNo)
 
-@app.route('/')
-def index():
-    return render_template('home.html')
-    
 #Save the file on server    
 def saveTheFile( form ):
         assets_dir = os.path.join(os.path.dirname(app.instance_path), UPLOADS_FOLDER)

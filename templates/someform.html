@@ -1,7 +1,7 @@
 {% extends "bootstrap/base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
-{% block titlem %}
-<title> Python form </title>
+{% block title %}
+Python form 
 {% endblock %}
 {% block content %}
 <div class="form-group col-xs-12">
@@ -13,13 +13,13 @@
 
 				{{ wtf.form_field(form.theceleb) }}
 			</div>
-		
+
 			<div class="form-group ">
 				<label class="font-weight-bold font-italic text-info"> Get Video fron URL </label>
 				{{ wtf.form_field(form.theURL) }}
 				<div class="col-xs-6">{{ wtf.form_field(form.theStartMin) }}
 					{{ wtf.form_field(form.theStartSec) }}</div>
-				<div class="col-xs-6"> 
+				<div class="col-xs-6">
 					{{ wtf.form_field(form.theEndMin) }}{{ wtf.form_field(form.theEndSec) }}
 				</div>
 			</div>
@@ -35,10 +35,12 @@
 			</div>
 
 			<div class="custom-file form-group ">
-				{{wtf.form_field(form.theDesc)}}
-			</div>
-			<div class="custom-file form-group ">
-				{{wtf.form_field(form.theTags)}}
+				<div class="col-xs-6">
+					{{wtf.form_field(form.theDesc)}}
+				</div>
+				<div class="col-xs-6">
+					{{wtf.form_field(form.theTags)}}
+				</div>
 			</div>
 			<br />
 			<input type="submit" value="Submit" class="btn btn-primary">
