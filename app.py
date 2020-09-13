@@ -32,6 +32,9 @@ lastVidStarted = datetime.now() #When tha last video processig started
 currentProcessStep = 0
 videoIsREadyToCheck = False
 
+siteUrl = 'https://youtu.be/'
+resUrl = 'https://www.youtube.com/embed/cPBUZcgkaJc'
+
 #The input form
 class SomeForm (FlaskForm):
     theceleb = SelectField(u'Celebrity', choices=CELEB_CHOISES)
@@ -96,6 +99,7 @@ def someForm():
 @app.route('/res', methods = ['GET', 'POST']) 
 def showRes():
     rform = ResForm()
+    rform.resUrl = resUrl
     if rform.validate_on_submit():
         print('>>> quality ' + rform.theQuality.data )
         global videoIsREadyToCheck
@@ -103,19 +107,24 @@ def showRes():
         return redirect(url_for('someForm'))
     return render_template('result.html', form = rform)
 
-@app.route('/done')  
-def videoIsDone():
+@app.route('/done/<vidurl>')  
+def videoIsDone(vidurl=''):
     global videoIsInProgress 
     videoIsInProgress = False
     global currentProcessStep
     currentProcessStep = 0
     global videoIsREadyToCheck
     videoIsREadyToCheck = True
+    if (vidurl != ''):
+        global resUrl
+        resUrl = siteUrl + vidurl
+    
     return 'Nice! the video is done'
 
 @app.route('/setstep/<stepNo>')
 def updateCurrentStep (stepNo = 0):
-    print('>>> current step is set ' + stepNo)
+    print('>>> current step is set ' + stepNo
+    )
     global currentProcessStep
     currentProcessStep = stepNo
     return 'Current step was updated {}'.format(stepNo)
