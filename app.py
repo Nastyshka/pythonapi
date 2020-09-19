@@ -20,17 +20,17 @@ Bootstrap(app)
 app.config['SECRET_KEY'] = 'do not tell anyone' 
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 10MB max-limit.
 
-CELEB_CHOISES = [('1','Daisy Ridley'), ('2', 'Emma Stone'), ('3','Gal Gadot'), ('4', 'K AOA CHANMI')] #Add celebrities here
+CELEB_CHOISES = [('1','Daisy Ridley'), ('2', 'Emma Stone'), ('3','Gal Gadot'), ('4', 'K AOA CHANMI'), ('5', 'Emma Watson')] #Add celebrities here
 TAGS_CHOISES = [('tag 1','tag 1'), ('tag 2','tag 2'), ('tag 3','tag 3')]
 ALLOWED_SITES = ['porn.com', 'www.moreporn.com', 'http://localhost:5000'] #Add sites here
 VIDEO_EXT = ['WEBM', 'MP4', 'mp4', 'AVI', 'csv']
-#UPLOADS_FOLDER = 'C:\\DeepFun_v2\\DeepFaceLab_NVIDIA\\workspace\\newData_dst'
-UPLOADS_FOLDER = 'uploads'
+UPLOADS_FOLDER = 'C:\\DeepFun_v2\\DeepFaceLab_NVIDIA\\workspace\\newData_dst'
+#UPLOADS_FOLDER = 'uploads'
 
 videoIsInProgress = False #Can upload a new video? 
 lastVidStarted = datetime.now() #When tha last video processig started
 currentProcessStep = 0
-videoIsREadyToCheck = False
+videoIsREadyToCheck = False 
 
 #The input form
 class SomeForm (FlaskForm):
@@ -66,7 +66,7 @@ def someForm():
             #Save the video file
             res = saveTheFile(form)
             #Start processing
-            threading.Thread(target=doFile(form.theceleb.data))
+            threading.Thread(target=doFile(form.theceleb.data,str(res)))
             #threading.Thread(target = doFile(form.theceleb.data)).start()
         elif form.theURL.data != None :  
             if form.theStartMin.data != None and form.theStartSec.data != None and form.theEndMin.data != None and form.theEndSec.data != None :
