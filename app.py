@@ -20,20 +20,17 @@ Bootstrap(app)
 app.config['SECRET_KEY'] = 'do not tell anyone' 
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 10MB max-limit.
 
-CELEB_CHOISES = [('1','Daisy Ridley'), ('2', 'Emma Stone'), ('3','Gal Gadot'), ('4', 'K AOA CHANMI')] #Add celebrities here
+CELEB_CHOISES = [('1','Daisy Ridley'), ('2', 'Emma Stone'), ('3','Gal Gadot'), ('4', 'K AOA CHANMI'), ('5', 'Emma Watson')] #Add celebrities here
 TAGS_CHOISES = [('tag 1','tag 1'), ('tag 2','tag 2'), ('tag 3','tag 3')]
 ALLOWED_SITES = ['porn.com', 'www.moreporn.com', 'http://localhost:5000'] #Add sites here
 VIDEO_EXT = ['WEBM', 'MP4', 'mp4', 'AVI', 'csv']
-#UPLOADS_FOLDER = 'C:\\DeepFun_v2\\DeepFaceLab_NVIDIA\\workspace\\newData_dst'
-UPLOADS_FOLDER = 'uploads'
+UPLOADS_FOLDER = 'C:\\DeepFun_v2\\DeepFaceLab_NVIDIA\\workspace\\newData_dst'
+#UPLOADS_FOLDER = 'uploads'
 
 videoIsInProgress = False #Can upload a new video? 
 lastVidStarted = datetime.now() #When tha last video processig started
 currentProcessStep = 0
-videoIsREadyToCheck = False
-
-siteUrl = 'https://youtu.be/'
-resUrl = 'https://www.youtube.com/embed/cPBUZcgkaJc'
+videoIsREadyToCheck = False 
 
 #The input form
 class SomeForm (FlaskForm):
@@ -61,17 +58,19 @@ def someForm(usr = '1'):
     print(videoIsInProgress)
     form = SomeForm()
     if request.method == 'POST' and form.validate(): 
-        print('>>> description > ' + form.theUsr.data); 
+       
+        print('>>> description > ' + form.theUsr.data)
         if not allowed_site(form.theURL.data):
             form.theURL.errors.append("This site is not allowed") #Check allowed sites
     if form.validate_on_submit(): #If form is valid
-        print('>>> description > ' + form.theDesc.data); 
+        print('>>> description > ' + form.theDesc.data)
         print(form.theTags.data)
         if form.theFile.data != None :
             #Save the video file
             res = saveTheFile(form)
             #Start processing
-            threading.Thread(target=doFile(form.theceleb.data))
+            
+            threading.Thread(target=doFile(form.theceleb.data,str(res)))
             #threading.Thread(target = doFile(form.theceleb.data)).start()
         elif form.theURL.data != None :  
             if form.theStartMin.data != None and form.theStartSec.data != None and form.theEndMin.data != None and form.theEndSec.data != None :
@@ -93,12 +92,14 @@ def someForm(usr = '1'):
     if (videoIsInProgress) : 
         return render_template('videoIsInProgress.html', currStep = currentProcessStep)
     elif (videoIsREadyToCheck == True):
+        
         return redirect(url_for('showRes', usr = usr))
     else :    
         form.theUsr.data = usr
         print( '>> the usr is > ' + form.theUsr.data)
         return render_template('someform.html', form=form)
     
+
 
 @app.route('/res/<usr>', methods = ['GET', 'POST']) 
 def showRes(usr = '1'):
@@ -128,8 +129,8 @@ def videoIsDone(vidurl=''):
 
 @app.route('/setstep/<stepNo>')
 def updateCurrentStep (stepNo = 0):
-    print('>>> current step is set ' + stepNo
-    )
+
+    print('>>> current step is set ' + stepNo)
     global currentProcessStep
     currentProcessStep = stepNo
     return 'Current step was updated {}'.format(stepNo)
@@ -154,5 +155,4 @@ def allowed_site(url):
             return False
 
 if __name__ == '__main__':
-    app.run(debug=True, host= '0.0.0.0');
-
+    app.run(debug=True, host= '0.0.0.0')
