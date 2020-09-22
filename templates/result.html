@@ -12,7 +12,7 @@ Result
 
 {% block content %}
 <div class="form-group col-xs-12">
-  <h2>Look what you've done!</h2>
+  <h2>{{form.theUsr}}! Look what you've done!</h2>
   <form action="{{ url_for('someForm') }}" method="post" enctype="multipart/form-data">
     <div class="form-group ">
       <video width="320" height="240" controls>
@@ -21,13 +21,12 @@ Result
       </video>
     </div>
 
-    <div class="form-group ">
-      {{ form.theQuality.label }}
+    <iframe width="420" height="315" 
+    frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
+    src={{form.resUrl}}>
+    </iframe> 
 
-      {{ form.theQuality(min=0, max=5, oninput="outputUpdate(value)") }}
-      {{ form.theQuality.data }}
-      <output for="theQuality" id="q">{{ form.theQuality.data }}</output>
-    </div>
+    <!-- <iframe width="1519" height="511" src="https://www.youtube.com/embed/kb_GJkry3M8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
 
     <div class="form-group ">
       <input type="submit" value="Ok" class="btn btn-primary">

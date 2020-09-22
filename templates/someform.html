@@ -8,6 +8,7 @@ Python form
 	<br />
 	<form action="{{ url_for('someForm') }}" method="post" enctype="multipart/form-data">
 		{{ form.csrf_token }}
+		{{ form.theUsr}}
 		<div class="form-group">
 			<div class="form-group">
 

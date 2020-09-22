@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, TextAreaField, SelectMultipleField
+from wtforms import StringField, SelectField, TextAreaField, SelectMultipleField, TextField, HiddenField
 from wtforms.fields.html5 import URLField, TimeField, DecimalField, IntegerField, IntegerRangeField
 from wtforms.validators import DataRequired, Email, URL, NumberRange, Optional
 from flask_wtf.file import FileField, FileRequired, FileAllowed
@@ -46,13 +46,14 @@ class SomeForm (FlaskForm):
     theFile = FileField('theFile', validators=[Optional(), FileAllowed(VIDEO_EXT, 'Bad File Type')])
     theDesc = TextAreaField(u'Description', validators=[Optional()])
     theTags = SelectMultipleField(u'Tags', choices=TAGS_CHOISES, validators=[Optional()])
+    theUsr = HiddenField(u'Usr', validators=[Optional()])
 
 class ResForm (FlaskForm):
     theQuality = IntegerRangeField ('Is it good? ', default=3, validators=[Optional(),NumberRange(min=0, max=5)])
 
-@app.route('/', methods=['GET', 'POST'])
-@app.route('/the_form', methods=['GET', 'POST'])
-def someForm():
+@app.route('/the_form/<usr>', methods=['GET'])
+@app.route('/the_form/', methods=['POST'])
+def someForm(usr = '1'):
     global videoIsInProgress
     global lastVideoStarted
     global currentProcessStep
@@ -60,7 +61,8 @@ def someForm():
     print(videoIsInProgress)
     form = SomeForm()
     if request.method == 'POST' and form.validate(): 
-          if not allowed_site(form.theURL.data):
+        print('>>> description > ' + form.theUsr.data); 
+        if not allowed_site(form.theURL.data):
             form.theURL.errors.append("This site is not allowed") #Check allowed sites
     if form.validate_on_submit(): #If form is valid
         print('>>> description > ' + form.theDesc.data); 
@@ -91,15 +93,18 @@ def someForm():
     if (videoIsInProgress) : 
         return render_template('videoIsInProgress.html', currStep = currentProcessStep)
     elif (videoIsREadyToCheck == True):
-        return redirect(url_for('showRes'))
+        return redirect(url_for('showRes', usr = usr))
     else :    
+        form.theUsr.data = usr
+        print( '>> the usr is > ' + form.theUsr.data)
         return render_template('someform.html', form=form)
     
 
-@app.route('/res', methods = ['GET', 'POST']) 
-def showRes():
+@app.route('/res/<usr>', methods = ['GET', 'POST']) 
+def showRes(usr = '1'):
     rform = ResForm()
     rform.resUrl = resUrl
+    rform.theUsr = usr
     if rform.validate_on_submit():
         print('>>> quality ' + rform.theQuality.data )
         global videoIsREadyToCheck
