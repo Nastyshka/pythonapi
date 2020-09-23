@@ -12,6 +12,7 @@ import os
 import threading
 from werkzeug.utils import secure_filename
 from someScript import doFile, doURL, doFileTime, doURLTime
+from DFM_dm import findUsrInQueue
 
 
 app = Flask(__name__, static_folder='static')
@@ -23,9 +24,9 @@ app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 10MB max-limit.
 CELEB_CHOISES = [('1','Daisy Ridley'), ('2', 'Emma Stone'), ('3','Gal Gadot'), ('4', 'K AOA CHANMI'), ('5', 'Emma Watson')] #Add celebrities here
 TAGS_CHOISES = [('tag 1','tag 1'), ('tag 2','tag 2'), ('tag 3','tag 3')]
 ALLOWED_SITES = ['porn.com', 'www.moreporn.com', 'http://localhost:5000'] #Add sites here
-VIDEO_EXT = ['WEBM', 'MP4', 'mp4', 'AVI', 'csv']
-UPLOADS_FOLDER = 'C:\\DeepFun_v2\\DeepFaceLab_NVIDIA\\workspace\\newData_dst'
-#UPLOADS_FOLDER = 'uploads'
+VIDEO_EXT = ['WEBM', 'MP4', 'mp4', 'AVI', 'csv', 'wsdl']
+# UPLOADS_FOLDER = 'C:\\DeepFun_v2\\DeepFaceLab_NVIDIA\\workspace\\newData_dst'
+UPLOADS_FOLDER = 'uploads'
 
 videoIsInProgress = False #Can upload a new video? 
 lastVidStarted = datetime.now() #When tha last video processig started
@@ -35,7 +36,7 @@ videoIsREadyToCheck = False
 #The input form
 class SomeForm (FlaskForm):
     theceleb = SelectField(u'Celebrity', choices=CELEB_CHOISES)
-    theURL = URLField ('theURL', validators=[Optional()])
+    theURL = URLField ('Video fron URL', validators=[Optional()])
     theStartMin = IntegerField ('Start Min', validators=[Optional(), NumberRange(min=0, max=59)])
     theStartSec = IntegerField ('Start Sec', validators=[Optional(),NumberRange(min=0, max=59)])
     theEndMin = IntegerField('End Min', validators=[Optional(),NumberRange(min=0, max=59)])
@@ -43,7 +44,8 @@ class SomeForm (FlaskForm):
     theFile = FileField('theFile', validators=[Optional(), FileAllowed(VIDEO_EXT, 'Bad File Type')])
     theDesc = TextAreaField(u'Description', validators=[Optional()])
     theTags = SelectMultipleField(u'Tags', choices=TAGS_CHOISES, validators=[Optional()])
-    theUsr = HiddenField(u'Usr', validators=[Optional()])
+    theUsr = HiddenField(u'Usr')
+    theTitle = TextField(u'Title', validators=[Optional()])
 
 class ResForm (FlaskForm):
     theQuality = IntegerRangeField ('Is it good? ', default=3, validators=[Optional(),NumberRange(min=0, max=5)])
@@ -57,6 +59,9 @@ def someForm(usr = '1'):
 
     print(videoIsInProgress)
     form = SomeForm()
+
+    indexInQueue = findUsrInQueue(usr)
+    
     if request.method == 'POST' and form.validate(): 
        
         print('>>> description > ' + form.theUsr.data)
@@ -70,7 +75,13 @@ def someForm(usr = '1'):
             res = saveTheFile(form)
             #Start processing
             
-            threading.Thread(target=doFile(form.theceleb.data,str(res)))
+            print('>>>> save to gsheet > ' + form.theUsr.data)
+            threading.Thread(target=
+            doFile(
+                form.theTitle.data,
+                form.theceleb.data,
+                str(res), 
+                form.theUsr.data))
             #threading.Thread(target = doFile(form.theceleb.data)).start()
         elif form.theURL.data != None :  
             if form.theStartMin.data != None and form.theStartSec.data != None and form.theEndMin.data != None and form.theEndSec.data != None :
@@ -89,10 +100,10 @@ def someForm(usr = '1'):
         lastVideoStarted  = datetime.now()
         currentProcessStep = 1
         return 'nice! {} come back and check in 5 hours'.format(form.theceleb.data)
-    if (videoIsInProgress) : 
-        return render_template('videoIsInProgress.html', currStep = currentProcessStep)
+    #if (videoIsInProgress) : 
+    if (indexInQueue >= 0) : 
+        return render_template('videoIsInProgress.html', currStep = currentProcessStep, indexInQueue = indexInQueue)
     elif (videoIsREadyToCheck == True):
-        
         return redirect(url_for('showRes', usr = usr))
     else :    
         form.theUsr.data = usr

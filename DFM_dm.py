@@ -35,3 +35,23 @@ def test(user,videoName,celebrityNum):
     sheet.update('A'+str(len(titles)+1), user)
     sheet.update('B'+str(len(titles)+1), videoName)
     sheet.update('C'+str(len(titles)+1), celebs[celebrityNum-1])
+
+def saveInQueue(title, videoName, celebrityNum, usr):
+    sheet.delete_row(1)
+    titles = sheet.col_values(1)
+    
+    sheet.update('H1', len(titles))
+    print ('>>> saveInQueue  > ' + title + ' > ' + videoName + ' > ' + usr + ' > ' + celebrityNum) 
+    sheet.update('A'+str(len(titles)+1), title)
+    sheet.update('B'+str(len(titles)+1), videoName)
+    sheet.update('C'+str(len(titles)+1), celebs[int(celebrityNum)-1])
+    sheet.update('D'+str(len(titles)+1), usr)
+
+def findUsrInQueue (usr): 
+    try :
+        cell = sheet.find(usr)
+        print('>>>> found  > ' + str(cell.row))
+        return cell.row
+    except gspread.exceptions.CellNotFound:
+        print('>>>> not found  > ' + usr)
+        return -1
