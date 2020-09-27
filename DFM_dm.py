@@ -55,3 +55,6 @@ def findUsrInQueue (usr):
     except gspread.exceptions.CellNotFound:
         print('>>>> not found  > ' + usr)
         return -1
+
+def getAllInQueue():
+    return sheet.get_all_values()

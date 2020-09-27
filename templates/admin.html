@@ -1,0 +1,48 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block title %}
+Python form
+{% endblock %}
+{% block content %}
+<div class="form-group col-xs-12">
+    Hi, Admin
+    <br />
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Title</th>
+                <th scope="col">Cleb</th>
+                <th scope="col">Video</th>
+                <th scope="col">User</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>
+                    {{item.index}}
+                </td>
+                <td>
+                    {{item.title}}
+                </td>
+                <td>
+                    {{item.celeb}}
+                </td>
+                <td>
+                    {{item.vid}}
+                </td>
+                <td>
+                    {{item.usr}}
+                </td>
+                <td>
+                    <button type="button" class="btn btn-primary">click</button> 
+                </td>
+            </tr>
+            {%endfor%}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

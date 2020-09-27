@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Blueprint, Flask, render_template, request, redirect, url_for
 from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, TextAreaField, SelectMultipleField, TextField, HiddenField
 from wtforms.fields.html5 import URLField, TimeField, DecimalField, IntegerField, IntegerRangeField
@@ -13,9 +13,10 @@ import threading
 from werkzeug.utils import secure_filename
 from someScript import doFile, doURL, doFileTime, doURLTime
 from DFM_dm import findUsrInQueue
-
+from admin import admin_part
 
 app = Flask(__name__, static_folder='static')
+app.register_blueprint(admin_part)
 Bootstrap(app)
 
 app.config['SECRET_KEY'] = 'do not tell anyone' 
@@ -110,8 +111,6 @@ def someForm(usr = '1'):
         print( '>> the usr is > ' + form.theUsr.data)
         return render_template('someform.html', form=form)
     
-
-
 @app.route('/res/<usr>', methods = ['GET', 'POST']) 
 def showRes(usr = '1'):
     rform = ResForm()
@@ -164,6 +163,11 @@ def allowed_site(url):
             return True
         else:
             return False
+
+@app.route('/', methods=['GET','POST'])
+def indexpage():
+    return '<h1>Go to: /the_form/anyUserId instead</h1>'
+
 
 if __name__ == '__main__':
     app.run(debug=True, host= '0.0.0.0')
