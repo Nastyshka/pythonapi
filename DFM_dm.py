@@ -12,6 +12,7 @@ import re
 import subprocess
 
 import gspread
+
 from oauth2client.service_account import ServiceAccountCredentials
 import pprint
 
@@ -37,15 +38,17 @@ def test(user,videoName,celebrityNum):
     sheet.update('C'+str(len(titles)+1), celebs[celebrityNum-1])
 
 def saveInQueue(title, videoName, celebrityNum, usr):
-    sheet.delete_row(1)
-    titles = sheet.col_values(1)
-    
-    sheet.update('H1', len(titles))
+    qSize = sheet.row_count
+    print ( qSize)
     print ('>>> saveInQueue  > ' + title + ' > ' + videoName + ' > ' + usr + ' > ' + celebrityNum) 
-    sheet.update('A'+str(len(titles)+1), title)
-    sheet.update('B'+str(len(titles)+1), videoName)
-    sheet.update('C'+str(len(titles)+1), celebs[int(celebrityNum)-1])
-    sheet.update('D'+str(len(titles)+1), usr)
+    row = [title, videoName, celebs[int(celebrityNum)-1], usr]
+    sheet.append_row(row)
+
+def deleteFromQueue(index):
+    qSize = sheet.row_count
+    print ( qSize)
+    print ('>>> delete from Queue  > ' + index)
+    sheet.append_row(index)
 
 def findUsrInQueue (usr): 
     try :
