@@ -32,7 +32,7 @@ UPLOADS_FOLDER = 'static'
 videoIsInProgress = False #Can upload a new video? 
 lastVidStarted = datetime.now() #When tha last video processig started
 currentProcessStep = 0
-videoIsREadyToCheck = False 
+videoIsREadyToCheck = False
 
 #The input form
 class SomeForm (FlaskForm):

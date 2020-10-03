@@ -12,7 +12,7 @@ import os
 import threading
 from werkzeug.utils import secure_filename
 from someScript import doFile, doURL, doFileTime, doURLTime
-from DFM_dm import findUsrInQueue, getAllInQueue
+from DFM_dm import findUsrInQueue, getAllInQueue, deleteFromQueue
 
 
 class QItem:
@@ -43,7 +43,7 @@ def daminView():
     i = 0
     while i < len(allInQ):
         it = allInQ[i]
-        q.append(QItem(i, it[0], it[1], it[2], it[3]))
+        q.append(QItem(i+1, it[0], it[1], it[2], it[3]))
         print( it[0])
         print( it[1])
         print( it[2])
@@ -51,3 +51,22 @@ def daminView():
         i+=1
 
     return render_template('admin.html', items=q)
+
+@admin_part.route('/deleteLine', methods=['POST'])
+def deleteLine () :
+    indexToDel = request.args.get('ind')
+    print('>>>> delete line > ' + indexToDel)
+    deleteFromQueue(int(indexToDel))
+    q = []
+    i = 0
+    allInQ = getAllInQueue()
+    while i < len(allInQ):
+        it = allInQ[i]
+        q.append(QItem(i, it[0], it[1], it[2], it[3]))
+        print( it[0])
+        print( it[1])
+        print( it[2])
+        print( it[3])
+        i+=1
+    
+    return redirect(url_for('admin_part.daminView'))

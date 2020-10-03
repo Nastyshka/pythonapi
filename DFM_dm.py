@@ -47,8 +47,8 @@ def saveInQueue(title, videoName, celebrityNum, usr):
 def deleteFromQueue(index):
     qSize = sheet.row_count
     print ( qSize)
-    print ('>>> delete from Queue  > ' + index)
-    sheet.append_row(index)
+    print ('>>> delete from Queue  > ' + str(index))
+    sheet.delete_row(index)
 
 def findUsrInQueue (usr): 
     try :

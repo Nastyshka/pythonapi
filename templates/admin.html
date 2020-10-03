@@ -21,6 +21,7 @@ Python form
         </thead>
         <tbody>
             {% for item in items %}
+
             <tr>
                 <td>
                     {{item.index}}
@@ -37,12 +38,16 @@ Python form
                 <td>
                     {{item.vid}}
                     <video width="320" height="240" controls>
-                        <source src={{ url_for('static', filename="res.mp4") }} type="video/mp4">
+                        <source src={{ url_for('static', filename=item.vid) }} type="video/mp4">
                         Your browser does not support the video tag.
                       </video>
                 </td>
                 <td>
-                    <button type="button" class="btn btn-primary">click</button> 
+                    <form action="{{ url_for('admin_part.deleteLine', ind = item.index ) }}" method="post"  enctype="multipart/form-data">
+
+                    <input type="submit" value="click" class="btn btn-primary">
+                    </form>
+                    <!-- <button type="button" class="btn btn-primary">click</button>  -->
                 </td>
             </tr>
             {%endfor%}
