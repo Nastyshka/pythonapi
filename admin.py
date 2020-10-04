@@ -52,21 +52,9 @@ def daminView():
 
     return render_template('admin.html', items=q)
 
-@admin_part.route('/deleteLine', methods=['POST'])
-def deleteLine () :
-    indexToDel = request.args.get('ind')
-    print('>>>> delete line > ' + indexToDel)
-    deleteFromQueue(int(indexToDel))
-    q = []
-    i = 0
-    allInQ = getAllInQueue()
-    while i < len(allInQ):
-        it = allInQ[i]
-        q.append(QItem(i, it[0], it[1], it[2], it[3]))
-        print( it[0])
-        print( it[1])
-        print( it[2])
-        print( it[3])
-        i+=1
-    
+@admin_part.route('/deleteLine/<ind>', methods=['GET', 'POST'])
+def deleteLine(ind):
+    print('>>>> delete line > ')
+    print(ind)
+    deleteFromQueue(int(ind))
     return redirect(url_for('admin_part.daminView'))
