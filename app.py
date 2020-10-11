@@ -12,7 +12,7 @@ import os
 import threading
 from werkzeug.utils import secure_filename
 from someScript import doFile, doURL, doFileTime, doURLTime
-from DFM_dm import findUsrInQueue
+from DFM_dm import findUsrInQueue, CELEB_CHOISES
 from admin import admin_part
 
 app = Flask(__name__, static_folder='static')
@@ -22,7 +22,6 @@ Bootstrap(app)
 app.config['SECRET_KEY'] = 'do not tell anyone' 
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 10MB max-limit.
 
-CELEB_CHOISES = [('1','Daisy Ridley'), ('2', 'Emma Stone'), ('3','Gal Gadot'), ('4', 'K AOA CHANMI'), ('5', 'Emma Watson')] #Add celebrities here
 TAGS_CHOISES = [('tag 1','tag 1'), ('tag 2','tag 2'), ('tag 3','tag 3')]
 ALLOWED_SITES = ['porn.com', 'www.moreporn.com', 'http://localhost:5000'] #Add sites here
 VIDEO_EXT = ['WEBM', 'MP4', 'mp4', 'AVI', 'csv', 'wsdl']

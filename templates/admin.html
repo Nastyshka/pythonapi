@@ -1,7 +1,7 @@
 {% extends "bootstrap/base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% block title %}
-Python form
+Admin
 {% endblock %}
 {% block content %}
 <div class="form-group col-xs-12">
@@ -21,7 +21,7 @@ Python form
         </thead>
         <tbody>
             {% for item in items %}
-
+            <form action="{{ url_for('admin_part.editLine') }}" method="post" enctype="multipart/form-data">
             <tr>
                 <td>
                     {{item.index}}
@@ -36,7 +36,6 @@ Python form
                     {{item.usr}}
                 </td>
                 <td>
-                    {{item.vid}}
                     <video width="320" height="240" controls>
                         <source src={{ url_for('static', filename=item.vid) }} type="video/mp4">
                         Your browser does not support the video tag.
@@ -44,12 +43,23 @@ Python form
                 </td>
                 <td>
                     <td>
+                        <input type="submit" value="Submit" class="btn btn-primary">
+                        <!-- <a href="{{ url_for('admin_part.editLine', ind = item.index ) }}" class="btn btn-success">
+                            <span class="glyphicon glyphicon-ok"></span> Trash
+                        </a> -->
+                    </td>
+                </td>
+
+                <td>
+                    <td>
                         <a href="{{ url_for('admin_part.deleteLine', ind = item.index ) }}" class="btn btn-danger">
                             <span class="glyphicon glyphicon-trash"></span> Trash
                         </a>
                     </td>
                 </td>
+            
             </tr>
+        </form>
             {%endfor%}
         </tbody>
     </table>

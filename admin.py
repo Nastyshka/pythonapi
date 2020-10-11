@@ -12,22 +12,22 @@ import os
 import threading
 from werkzeug.utils import secure_filename
 from someScript import doFile, doURL, doFileTime, doURLTime
-from DFM_dm import findUsrInQueue, getAllInQueue, deleteFromQueue
+from DFM_dm import findUsrInQueue, getAllInQueue, deleteFromQueue, celebs, CELEB_CHOISES
 
 
-class QItem:
+class QItem (FlaskForm):
     index =  TextField(u'Idex')
     title = TextField(u'Title')
-    celeb = TextField(u'Celeb')
+    celeb = SelectField(u'Celeb', choices=CELEB_CHOISES)
     vid = TextField(u'video')
     usr = TextField(u'User')
 
-    def __init__(self, i, t, v, c, u):
-        self.index = i
-        self.title = t
-        self.celeb = c
-        self.vid = v
-        self.usr = u
+    # def __init__(self, i, t, v, c, u):
+    #     self.index.data = i
+    #     self.title.data = t
+    #     self.celeb.data = c
+    #     self.vid.data = v
+    #     self.usr.data = u
 
 
 admin_part = Blueprint('admin_part', __name__, template_folder='templates')
@@ -43,11 +43,19 @@ def daminView():
     i = 0
     while i < len(allInQ):
         it = allInQ[i]
-        q.append(QItem(i+1, it[0], it[1], it[2], it[3]))
-        print( it[0])
-        print( it[1])
-        print( it[2])
-        print( it[3])
+        #q.append(QItem(i+1, it[0], it[1], it[2], it[3]))
+        qi = QItem()
+        qi.index = i+1
+        qi.title.data = it[0]
+
+        qi.celeb.data = it[2]
+        qi.vid.data = it[1]
+        qi.usr = it[3]
+        q.append(qi)
+
+        # print( it[0])
+        # print( it[1])
+        # print( it[3])
         i+=1
 
     return render_template('admin.html', items=q)
@@ -57,4 +65,12 @@ def deleteLine(ind):
     print('>>>> delete line > ')
     print(ind)
     deleteFromQueue(int(ind))
+    return redirect(url_for('admin_part.daminView'))
+
+@admin_part.route('/editLine', methods = ['POST'])
+def editLine (): 
+    form = QItem()
+    print ('>>>>> edit line >')
+    print ('>>>>>' + form.title.data)
+    print ('>>>>>' + form.celeb.data)
     return redirect(url_for('admin_part.daminView'))

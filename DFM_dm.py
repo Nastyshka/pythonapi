@@ -19,6 +19,10 @@ import pprint
 chrome_path = "C:/Users/rober/Desktop/chromedriver.exe"
 
 celebs = ["daisy ridley", "emma stone", "gal gadot", "K AOA CHANMI", "emma watson"] # list of celebs (another one)
+CELEB_CHOISES = [('daisy ridley','Daisy Ridley'), ('emma stone', 'emma stone'),
+ ('gal gadot','Gal Gadot'), ('K AOA CHANMI', 'K AOA CHANMI'), ('emma watson', 'Emma Watson')] #Add celebrities here
+
+
 
 # retrieving data
 scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
@@ -35,13 +39,14 @@ def test(user,videoName,celebrityNum):
     
     sheet.update('A'+str(len(titles)+1), user)
     sheet.update('B'+str(len(titles)+1), videoName)
-    sheet.update('C'+str(len(titles)+1), celebs[celebrityNum-1])
+    # sheet.update('C'+str(len(titles)+1), celebs[celebrityNum-1])
+    sheet.update('C'+str(len(titles)+1), celebrityNum)
 
 def saveInQueue(title, videoName, celebrityNum, usr):
     qSize = sheet.row_count
     print ( qSize)
     print ('>>> saveInQueue  > ' + title + ' > ' + videoName + ' > ' + usr + ' > ' + celebrityNum) 
-    row = [title, videoName, celebs[int(celebrityNum)-1], usr]
+    row = [title, videoName, celebrityNum, usr]
     sheet.append_row(row)
 
 def deleteFromQueue(index):
