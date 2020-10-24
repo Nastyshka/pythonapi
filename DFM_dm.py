@@ -29,7 +29,7 @@ scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/aut
 creds = ServiceAccountCredentials.from_json_keyfile_name('adfdfm-bf958f34c7c0.json', scope)
 client = gspread.authorize(creds)
 
-sheet = client.open('ADFDFMQueue').sheet1
+sheet = client.open('ADFDFMQueue').get_worksheet(1)
 
 def test(user,videoName,celebrityNum):
     sheet.delete_row(1)
@@ -66,3 +66,8 @@ def findUsrInQueue (usr):
 
 def getAllInQueue():
     return sheet.get_all_values()
+
+def editQueueLine (data, ind): 
+    print('>>> edit line ' + str(ind) + ' > ' + str(data))  
+    sheet.update_cell(ind, 1, data[0])
+    sheet.update_cell(ind, 3, data[2])

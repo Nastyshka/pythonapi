@@ -1,7 +1,7 @@
 from flask import Flask, Blueprint, jsonify, json, render_template, request, redirect, url_for
 from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, TextAreaField, SelectMultipleField, TextField, HiddenField
-from wtforms.fields.html5 import URLField, TimeField, DecimalField, IntegerField, IntegerRangeField
+from wtforms.fields.html5 import URLField, TimeField, DecimalField, IntegerField, IntegerRangeField,IntegerField
 from wtforms.validators import DataRequired, Email, URL, NumberRange, Optional
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 from flask_uploads import configure_uploads, IMAGES, UploadSet
@@ -12,11 +12,11 @@ import os
 import threading
 from werkzeug.utils import secure_filename
 from someScript import doFile, doURL, doFileTime, doURLTime
-from DFM_dm import findUsrInQueue, getAllInQueue, deleteFromQueue, celebs, CELEB_CHOISES
+from DFM_dm import findUsrInQueue, getAllInQueue, deleteFromQueue, editQueueLine, celebs, CELEB_CHOISES
 
 
 class QItem (FlaskForm):
-    index =  TextField(u'Idex')
+    index = IntegerField(u'Idex')
     title = TextField(u'Title')
     celeb = SelectField(u'Celeb', choices=CELEB_CHOISES)
     vid = TextField(u'video')
@@ -45,7 +45,7 @@ def daminView():
         it = allInQ[i]
         #q.append(QItem(i+1, it[0], it[1], it[2], it[3]))
         qi = QItem()
-        qi.index = i+1
+        qi.index.data = i+1
         qi.title.data = it[0]
 
         qi.celeb.data = it[2]
@@ -73,4 +73,12 @@ def editLine ():
     print ('>>>>> edit line >')
     print ('>>>>>' + form.title.data)
     print ('>>>>>' + form.celeb.data)
+    rowData = []
+    rowData.append(form.title.data)
+    rowData.append(form.vid.data)
+    rowData.append(form.celeb.data)
+    rowData.append(form.usr.data)
+
+    ind = form.index.data
+    editQueueLine(rowData, ind)
     return redirect(url_for('admin_part.daminView'))

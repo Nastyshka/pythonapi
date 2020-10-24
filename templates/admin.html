@@ -24,7 +24,7 @@ Admin
             <form action="{{ url_for('admin_part.editLine') }}" method="post" enctype="multipart/form-data">
             <tr>
                 <td>
-                    {{item.index}}
+                    {{item.index(readonly=true)}}
                 </td>
                 <td>
                     {{item.title}}
