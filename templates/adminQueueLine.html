@@ -1,0 +1,68 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% macro queueLine(item, value='', type='Form') -%}
+<form action="{{ url_for('admin_part.editLine') }}" method="post" enctype="multipart/form-data">
+{{ item.csrf_token() }}
+<tr>
+    <td>
+        {{item.index(hidden=true)}}
+        {{item.index.data}}
+    </td>
+    <td>
+        {% if item.state.data != 'WORKING' %}
+        {{item.title}}
+        {% else %}
+        {{item.title.data}}
+        {% endif %}
+    </td>
+    <td>
+        {% if item.state.data != 'WORKING' %}
+        {{item.celeb}}
+        {% else %}
+        {{item.celeb.data}}
+        {% endif %}
+    </td>
+    <td>
+        {{item.usr}}
+    </td>
+    <td>
+        {% if item.state.data != 'WORKING' %}
+        {{item.state}}
+        {% else %}
+        {{item.state.data}}
+        {% endif %}
+    </td>
+    <td>
+        <video width="320" height="240" controls>
+            <source src={{ url_for('static', filename=item.vid) }} type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </td>
+    <td>
+        {% if item.state.data != 'WORKING' %}
+        <input type="submit" value="&#10004;" class="btn btn-success">
+        <!-- <a href="{{ url_for('admin_part.editLine', ind = item.index ) }}" class="btn btn-success">
+            <span class="glyphicon glyphicon-ok"></span> Trash
+        </a> -->
+        {% endif %}
+    </td>
+
+    <td>
+        {% if item.state.data != 'WORKING' %}
+        <a href="{{ url_for('admin_part.deleteLine', ind = item.index.data ) }}" class="btn btn-danger">
+            <span class="glyphicon glyphicon-trash"></span>
+        </a>
+        {% endif %}
+    </td>
+    <td>
+        {% if item.state.data == 'DONE' %}
+        <a href="{{item.resUrl}}" class="btn btn-primary" target="_blank">
+            watch here
+        </a>
+        {% endif %}
+    </td>
+
+</tr>
+</form>
+{%- endmacro %}

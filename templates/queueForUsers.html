@@ -1,0 +1,56 @@
+{% extends "bootstrap/base.html" %}
+{% block title %}
+Queue
+{% endblock %}
+{% block content %}
+<div class="form-group col-xs-12">
+    <br />
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Title</th>
+                <th scope="col">Cleb</th>
+                <th scope="col">User</th>
+                <th scope="col">State</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>
+                    {{item.index(hidden=true)}}
+                    {{item.index.data}}
+                </td>
+                <td>
+                    {{item.title.data}}
+                </td>
+                <td>
+                    {{item.celeb.data}}
+                </td>
+                <td>
+                    {{item.usr}}
+                </td>
+                <td>
+                    {{item.state.data}}
+                </td>
+                <td>
+                    <video width="320" height="240" controls>
+                        <source src={{ url_for('static', filename=item.vid) }} type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </td>
+                <td>
+                    {% if item.state.data == 'DONE' %}
+                    <a href="{{item.resUrl}}" class="btn btn-primary" target="_blank">
+                        watch here
+                    </a>
+                    {% endif %}
+                </td>
+            </tr>
+            {%endfor%}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
