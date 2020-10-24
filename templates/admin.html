@@ -1,5 +1,6 @@
 {% extends "bootstrap/base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
+{% from "adminQueueLine.html" import queueLine as queueLine with context%}
 {% block title %}
 Admin
 {% endblock %}
@@ -15,51 +16,14 @@ Admin
                 <th scope="col">Title</th>
                 <th scope="col">Cleb</th>
                 <th scope="col">User</th>
+                <th scope="col">State</th>
                 <th scope="col">Video</th>
                 <th scope="col"></th>
             </tr>
         </thead>
         <tbody>
             {% for item in items %}
-            <form action="{{ url_for('admin_part.editLine') }}" method="post" enctype="multipart/form-data">
-            <tr>
-                <td>
-                    {{item.index(readonly=true)}}
-                </td>
-                <td>
-                    {{item.title}}
-                </td>
-                <td>
-                    {{item.celeb}}
-                </td>
-                <td>
-                    {{item.usr}}
-                </td>
-                <td>
-                    <video width="320" height="240" controls>
-                        <source src={{ url_for('static', filename=item.vid) }} type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                </td>
-                <td>
-                    <td>
-                        <input type="submit" value="Submit" class="btn btn-primary">
-                        <!-- <a href="{{ url_for('admin_part.editLine', ind = item.index ) }}" class="btn btn-success">
-                            <span class="glyphicon glyphicon-ok"></span> Trash
-                        </a> -->
-                    </td>
-                </td>
-
-                <td>
-                    <td>
-                        <a href="{{ url_for('admin_part.deleteLine', ind = item.index ) }}" class="btn btn-danger">
-                            <span class="glyphicon glyphicon-trash"></span> Trash
-                        </a>
-                    </td>
-                </td>
-            
-            </tr>
-        </form>
+              {{queueLine (item)}}
             {%endfor%}
         </tbody>
     </table>

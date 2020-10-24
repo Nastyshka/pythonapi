@@ -12,7 +12,7 @@ import os
 import threading
 from werkzeug.utils import secure_filename
 from someScript import doFile, doURL, doFileTime, doURLTime
-from DFM_dm import findUsrInQueue, CELEB_CHOISES
+from DFM_dm import findUsrInQueue, CELEB_CHOISES, setVidState, setDoneWithUrl
 from admin import admin_part
 
 app = Flask(__name__, static_folder='static')
@@ -122,27 +122,41 @@ def showRes(usr = '1'):
         return redirect(url_for('someForm'))
     return render_template('result.html', form = rform)
 
-@app.route('/done/<vidurl>')  
-def videoIsDone(vidurl=''):
-    global videoIsInProgress 
-    videoIsInProgress = False
-    global currentProcessStep
-    currentProcessStep = 0
-    global videoIsREadyToCheck
-    videoIsREadyToCheck = True
-    if (vidurl != ''):
-        global resUrl
-        resUrl = siteUrl + vidurl
-    
+@app.route('/done/<vid>/<vidurl>')  
+def videoIsDone(vid='', vidurl=''):
+    if (vid != '' and vidurl != ''):
+        setDoneWithUrl(vid, vidurl)
     return 'Nice! the video is done'
 
-@app.route('/setstep/<stepNo>')
-def updateCurrentStep (stepNo = 0):
+# @app.route('/done/<vidurl>')  
+# def videoIsDone(vidurl=''):
+    # global videoIsInProgress 
+    # videoIsInProgress = False
+    # global currentProcessStep
+    # currentProcessStep = 0
+    # global videoIsREadyToCheck
+    # videoIsREadyToCheck = True
+    # if (vidurl != ''):
+    #     global resUrl
+    #     resUrl = siteUrl + vidurl
+    
+    # return 'Nice! the video is done'
 
-    print('>>> current step is set ' + stepNo)
-    global currentProcessStep
-    currentProcessStep = stepNo
-    return 'Current step was updated {}'.format(stepNo)
+# @app.route('/setstep/<stepNo>')
+# def updateCurrentStep (stepNo = 0):
+
+#     print('>>> current step is set ' + stepNo)
+#     global currentProcessStep
+#     currentProcessStep = stepNo
+#     return 'Current step was updated {}'.format(stepNo)
+    
+@app.route('/setstate/<vid>/<state>')
+def updateCurrentStep (vid='', state=''):
+    if (vid != '' and state != '') :
+        setVidState(vid, state)
+    print('>>> set state vid >  ' + vid)
+    print('>>> set state state ' + state)
+    return 'the state was updated {}'.format(state)
 
 #Save the file on server    
 def saveTheFile( form ):

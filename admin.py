@@ -12,7 +12,7 @@ import os
 import threading
 from werkzeug.utils import secure_filename
 from someScript import doFile, doURL, doFileTime, doURLTime
-from DFM_dm import findUsrInQueue, getAllInQueue, deleteFromQueue, editQueueLine, celebs, CELEB_CHOISES
+from DFM_dm import findUsrInQueue, getAllInQueue, deleteFromQueue, editQueueLine, celebs, CELEB_CHOISES, STATE_CHOISES
 
 
 class QItem (FlaskForm):
@@ -21,6 +21,7 @@ class QItem (FlaskForm):
     celeb = SelectField(u'Celeb', choices=CELEB_CHOISES)
     vid = TextField(u'video')
     usr = TextField(u'User')
+    state = SelectField(u'State', choices=STATE_CHOISES)
 
     # def __init__(self, i, t, v, c, u):
     #     self.index.data = i
@@ -36,7 +37,7 @@ admin_part = Blueprint('admin_part', __name__, template_folder='templates')
 @admin_part.route('/admin')
 def daminView():
     # jsonify(getAllInQueue()
-    print('>>>> ')
+    print('>>>> admin >')
     q = []
     allInQ = getAllInQueue()
     #for it in getAllInQueue():
@@ -51,11 +52,13 @@ def daminView():
         qi.celeb.data = it[2]
         qi.vid.data = it[1]
         qi.usr = it[3]
+        qi.state.data = it[4]
+        qi.resUrl = it[5]
         q.append(qi)
 
         # print( it[0])
         # print( it[1])
-        # print( it[3])
+        print( '>>>> res url >' + it[5])
         i+=1
 
     return render_template('admin.html', items=q)
@@ -78,7 +81,37 @@ def editLine ():
     rowData.append(form.vid.data)
     rowData.append(form.celeb.data)
     rowData.append(form.usr.data)
+    rowData.append(form.state.data)
 
     ind = form.index.data
     editQueueLine(rowData, ind)
     return redirect(url_for('admin_part.daminView'))
+
+@admin_part.route('/queueForUsers')
+def queueForUsersView():
+    # jsonify(getAllInQueue()
+    print('>>>> queueForUsers >')
+    q = []
+    allInQ = getAllInQueue()
+    #for it in getAllInQueue():
+    i = 0
+    while i < len(allInQ):
+        it = allInQ[i]
+        #q.append(QItem(i+1, it[0], it[1], it[2], it[3]))
+        qi = QItem()
+        qi.index.data = i+1
+        qi.title.data = it[0]
+
+        qi.celeb.data = it[2]
+        qi.vid.data = it[1]
+        qi.usr = it[3]
+        qi.state.data = it[4]
+        qi.resUrl = it[5]
+        q.append(qi)
+
+        # print( it[0])
+        # print( it[1])
+        # print( it[3])
+        i+=1
+
+    return render_template('queueForUsers.html', items=q)

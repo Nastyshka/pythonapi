@@ -22,6 +22,9 @@ celebs = ["daisy ridley", "emma stone", "gal gadot", "K AOA CHANMI", "emma watso
 CELEB_CHOISES = [('daisy ridley','Daisy Ridley'), ('emma stone', 'emma stone'),
  ('gal gadot','Gal Gadot'), ('K AOA CHANMI', 'K AOA CHANMI'), ('emma watson', 'Emma Watson')] #Add celebrities here
 
+STATE_CHOISES = [('REVIEW','REVIEW'), ('APPROVED', 'APPROVED'),
+ ('WORKING','WORKING'), ('DONE', 'DONE')] #Add states here
+
 
 
 # retrieving data
@@ -46,7 +49,7 @@ def saveInQueue(title, videoName, celebrityNum, usr):
     qSize = sheet.row_count
     print ( qSize)
     print ('>>> saveInQueue  > ' + title + ' > ' + videoName + ' > ' + usr + ' > ' + celebrityNum) 
-    row = [title, videoName, celebrityNum, usr]
+    row = [title, videoName, celebrityNum, usr, 'REVIEW']
     sheet.append_row(row)
 
 def deleteFromQueue(index):
@@ -71,3 +74,15 @@ def editQueueLine (data, ind):
     print('>>> edit line ' + str(ind) + ' > ' + str(data))  
     sheet.update_cell(ind, 1, data[0])
     sheet.update_cell(ind, 3, data[2])
+    sheet.update_cell(ind, 5, data[4])
+
+def setVidState (vid, state) : 
+    print (">>> I set state here")
+    cell = sheet.find(vid)
+    sheet.update_cell(cell.row, 5, state.upper())
+
+def setDoneWithUrl (vid, url) : 
+    cell = sheet.find(vid)
+    print('>>>> I set done here  > ' + str(cell.row))
+    sheet.update_cell(cell.row, 5, 'DONE')
+    sheet.update_cell(cell.row, 6, url)
