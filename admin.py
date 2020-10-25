@@ -12,7 +12,7 @@ import os
 import threading
 from werkzeug.utils import secure_filename
 from someScript import doFile, doURL, doFileTime, doURLTime
-from DFM_dm import findUsrInQueue, getAllInQueue, deleteFromQueue, editQueueLine, celebs, CELEB_CHOISES, STATE_CHOISES
+from DFM_dm import findUsrInQueue, getAllInQueue, deleteFromQueue, editQueueLine, celebs, CELEB_CHOISES, STATE_CHOISES,sortSheetData
 
 
 class QItem (FlaskForm):
@@ -34,14 +34,19 @@ class QItem (FlaskForm):
 admin_part = Blueprint('admin_part', __name__, template_folder='templates')
 
 
+@admin_part.route('/sort')
+def sort ():
+    sortSheetData()
+
+
 @admin_part.route('/admin')
-def daminView():
+def daminView():   
     # jsonify(getAllInQueue()
     print('>>>> admin >')
     q = []
     allInQ = getAllInQueue()
     #for it in getAllInQueue():
-    i = 1
+    i = 0
     while i < len(allInQ):
         it = allInQ[i]
         #q.append(QItem(i+1, it[0], it[1], it[2], it[3]))
@@ -85,6 +90,7 @@ def editLine ():
 
     ind = form.index.data
     editQueueLine(rowData, ind)
+    sortSheetData()
     return redirect(url_for('admin_part.daminView'))
 
 @admin_part.route('/queueForUsers')
@@ -94,7 +100,7 @@ def queueForUsersView():
     q = []
     allInQ = getAllInQueue()
     #for it in getAllInQueue():
-    i = 1
+    i = 0
     while i < len(allInQ):
         it = allInQ[i]
         #q.append(QItem(i+1, it[0], it[1], it[2], it[3]))

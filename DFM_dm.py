@@ -15,6 +15,7 @@ import gspread
 
 from oauth2client.service_account import ServiceAccountCredentials
 import pprint
+from operator import itemgetter
 
 chrome_path = "C:/Users/rober/Desktop/chromedriver.exe"
 
@@ -23,8 +24,8 @@ CELEB_CHOISES = [('K APINK NAEUN','K APINK NAEUN'), ('K BLACKPINK JENNIE', 'K BL
  ('K IU','K IU'), ('K MISS A SUZY', 'K MISS A SUZY'), ('K RED VELVET IRENE', 'K RED VELVET IRENE'), ('K RED VELVET WENDY', 'K RED VELVET WENDY')
  , ('K TWICE MOMO', 'K TWICE MOMO'), ('K TWICE TZUYU', 'K TWICE TZUYU')] #Add celebrities here
 
-STATE_CHOISES = [('REVIEW','REVIEW'), ('APPROVED', 'APPROVED'),
- ('WORKING','WORKING'), ('DONE', 'DONE')] #Add states here
+STATE_CHOISES = [('3 REVIEW','REVIEW'), ('2 APPROVED', 'APPROVED'),
+ ('1 WORKING','WORKING'), ('4 DONE', 'DONE')] #Add states here
 
 
 # retrieving data
@@ -49,8 +50,10 @@ def saveInQueue(title, videoName, celebrityNum, usr):
     qSize = sheet.row_count
     print ( qSize)
     print ('>>> saveInQueue  > ' + title + ' > ' + videoName + ' > ' + usr + ' > ' + celebrityNum) 
-    row = [title, videoName, celebrityNum, usr, 'REVIEW']
+    row = [title, videoName, celebrityNum, usr, '3 REVIEW']
     sheet.append_row(row)
+    print ('>>> saveInQueue  > ' + str(qSize) + ' > ' + str(sheet.row_count))
+    sortSheetData()
 
 def deleteFromQueue(index):
     qSize = sheet.row_count
@@ -75,14 +78,30 @@ def editQueueLine (data, ind):
     sheet.update_cell(ind, 1, data[0])
     sheet.update_cell(ind, 3, data[2])
     sheet.update_cell(ind, 5, data[4])
+    sortSheetData()
 
 def setVidState (vid, state) : 
     print (">>> I set state here")
     cell = sheet.find(vid)
     sheet.update_cell(cell.row, 5, state.upper())
+    sortSheetData()
 
 def setDoneWithUrl (vid, url) : 
     cell = sheet.find(vid)
     print('>>>> I set done here  > ' + str(cell.row))
     sheet.update_cell(cell.row, 5, 'DONE')
     sheet.update_cell(cell.row, 6, url)
+    sortSheetData()
+
+def sortSheetData () :
+    allOld = sheet.get_all_values()
+
+    print ('>>> sort   > ' + str(sheet.row_count))
+    allSorted  = sorted(allOld, key=itemgetter(4))
+    i = 1
+    while i < len(allOld):
+       print (' > ' + str(allSorted[i]))
+       i+=1
+    sheet.clear()
+    sheet.append_rows(allSorted)   
+    return allSorted
