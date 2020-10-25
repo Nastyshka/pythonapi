@@ -19,12 +19,12 @@ import pprint
 chrome_path = "C:/Users/rober/Desktop/chromedriver.exe"
 
 celebs = ["daisy ridley", "emma stone", "gal gadot", "K AOA CHANMI", "emma watson"] # list of celebs (another one)
-CELEB_CHOISES = [('daisy ridley','Daisy Ridley'), ('emma stone', 'emma stone'),
- ('gal gadot','Gal Gadot'), ('K AOA CHANMI', 'K AOA CHANMI'), ('emma watson', 'Emma Watson')] #Add celebrities here
+CELEB_CHOISES = [('K APINK NAEUN','K APINK NAEUN'), ('K BLACKPINK JENNIE', 'K BLACKPINK JENNIE'),
+ ('K IU','K IU'), ('K MISS A SUZY', 'K MISS A SUZY'), ('K RED VELVET IRENE', 'K RED VELVET IRENE'), ('K RED VELVET WENDY', 'K RED VELVET WENDY')
+ , ('K TWICE MOMO', 'K TWICE MOMO'), ('K TWICE TZUYU', 'K TWICE TZUYU')] #Add celebrities here
 
 STATE_CHOISES = [('REVIEW','REVIEW'), ('APPROVED', 'APPROVED'),
  ('WORKING','WORKING'), ('DONE', 'DONE')] #Add states here
-
 
 
 # retrieving data
@@ -32,7 +32,7 @@ scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/aut
 creds = ServiceAccountCredentials.from_json_keyfile_name('adfdfm-bf958f34c7c0.json', scope)
 client = gspread.authorize(creds)
 
-sheet = client.open('ADFDFMQueue').get_worksheet(1)
+sheet = client.open('ADFDFMQueue').get_worksheet(0)
 
 def test(user,videoName,celebrityNum):
     sheet.delete_row(1)

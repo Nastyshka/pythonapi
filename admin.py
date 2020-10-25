@@ -41,7 +41,7 @@ def daminView():
     q = []
     allInQ = getAllInQueue()
     #for it in getAllInQueue():
-    i = 0
+    i = 1
     while i < len(allInQ):
         it = allInQ[i]
         #q.append(QItem(i+1, it[0], it[1], it[2], it[3]))
@@ -94,7 +94,7 @@ def queueForUsersView():
     q = []
     allInQ = getAllInQueue()
     #for it in getAllInQueue():
-    i = 0
+    i = 1
     while i < len(allInQ):
         it = allInQ[i]
         #q.append(QItem(i+1, it[0], it[1], it[2], it[3]))

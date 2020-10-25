@@ -1,4 +1,4 @@
-from flask import Blueprint, Flask, render_template, request, redirect, url_for
+from flask import Blueprint, Flask, render_template, request, redirect, url_for, send_file
 from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, TextAreaField, SelectMultipleField, TextField, HiddenField
 from wtforms.fields.html5 import URLField, TimeField, DecimalField, IntegerField, IntegerRangeField
@@ -25,8 +25,8 @@ app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 10MB max-limit.
 TAGS_CHOISES = [('tag 1','tag 1'), ('tag 2','tag 2'), ('tag 3','tag 3')]
 ALLOWED_SITES = ['porn.com', 'www.moreporn.com', 'http://localhost:5000'] #Add sites here
 VIDEO_EXT = ['WEBM', 'MP4', 'mp4', 'AVI', 'csv', 'wsdl']
-# UPLOADS_FOLDER = 'C:\\DeepFun_v2\\DeepFaceLab_NVIDIA\\workspace\\newData_dst'
-UPLOADS_FOLDER = 'static'
+#UPLOADS_FOLDER = 'C:\\DeepFun_v1\\DeepFaceLab_CUDA\\workspace\\newData_dst'
+UPLOADS_FOLDER = '/var/www/FlaskApp/FlaskApp/flask/uploads/'
 
 videoIsInProgress = False #Can upload a new video? 
 lastVidStarted = datetime.now() #When tha last video processig started
@@ -165,6 +165,11 @@ def saveTheFile( form ):
         filename = secure_filename(file.filename)
         file.save( os.path.join(assets_dir, filename))
         return filename
+
+#Download the file from server
+@app.route("/downloadfile/<filename>", methods = ['GET'])
+def download_file(filename = ''):
+    return send_file(UPLOADS_FOLDER + filename, as_attachment=True, attachment_filename='')
 
 #Validate allowed sites
 def allowed_site(url):
