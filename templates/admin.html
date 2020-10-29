@@ -5,27 +5,16 @@
 Admin
 {% endblock %}
 {% block content %}
-<div class="form-group col-xs-12">
+<div>
     Hi, Admin
     <br />
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Title</th>
-                <th scope="col">Cleb</th>
-                <th scope="col">User</th>
-                <th scope="col">State</th>
-                <th scope="col">Video</th>
-                <th scope="col"></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in items %}
-              {{queueLine (item)}}
-            {%endfor%}
-        </tbody>
-    </table>
+    <br />
+    <br />
+    <div class="container-fluid">
+        {% for item in items %}
+            {{queueLine (item)}}
+            <br />
+        {%endfor%}
+    </div>
 </div>
 {% endblock %}

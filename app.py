@@ -12,7 +12,7 @@ import os
 import threading
 from werkzeug.utils import secure_filename
 from someScript import doFile, doURL, doFileTime, doURLTime
-from DFM_dm import findUsrInQueue, CELEB_CHOISES, setVidState, setDoneWithUrl, sortSheetData
+from DFM_dm import findUsrInQueue, getCelebs, setVidState, setDoneWithUrl, sortSheetData
 from admin import admin_part
 
 app = Flask(__name__, static_folder='static')
@@ -29,14 +29,9 @@ VIDEO_EXT = ['WEBM', 'MP4', 'mp4', 'AVI', 'csv', 'wsdl']
 UPLOADS_FOLDER = '/var/www/FlaskApp/FlaskApp/flask/uploads/'
 # UPLOADS_FOLDER = 'uploads/'
 
-videoIsInProgress = False #Can upload a new video? 
-lastVidStarted = datetime.now() #When tha last video processig started
-currentProcessStep = 0
-videoIsREadyToCheck = False
-
 #The input form
 class SomeForm (FlaskForm):
-    theceleb = SelectField(u'Celebrity', choices=CELEB_CHOISES)
+    theceleb = SelectField(u'Celebrity', choices=getCelebs())
     theURL = URLField ('Video fron URL', validators=[Optional()])
     theStartMin = IntegerField ('Start Min', validators=[Optional(), NumberRange(min=0, max=59)])
     theStartSec = IntegerField ('Start Sec', validators=[Optional(),NumberRange(min=0, max=59)])
@@ -54,11 +49,6 @@ class ResForm (FlaskForm):
 @app.route('/the_form/<usr>', methods=['GET'])
 @app.route('/the_form/', methods=['POST'])
 def someForm(usr = '1'):
-    global videoIsInProgress
-    global lastVideoStarted
-    global currentProcessStep
-
-    print(videoIsInProgress)
     form = SomeForm()
 
     indexInQueue = findUsrInQueue(usr)
@@ -97,13 +87,9 @@ def someForm(usr = '1'):
         else :
             return 'Not enough data to start'
         
-        videoIsInProgress = True
-        lastVideoStarted  = datetime.now()
-        currentProcessStep = 1
         return 'nice! {} come back and check in 5 hours'.format(form.theceleb.data)
-    #if (videoIsInProgress) : 
     if (indexInQueue >= 0) : 
-        return render_template('videoIsInProgress.html', currStep = currentProcessStep, indexInQueue = indexInQueue)
+        return render_template('videoIsInProgress.html', currStep = 1, indexInQueue = indexInQueue)
     elif (videoIsREadyToCheck == True):
         return redirect(url_for('showRes', usr = usr))
     else :    

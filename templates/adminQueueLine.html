@@ -2,67 +2,73 @@
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% macro queueLine(item, value='', type='Form') -%}
-<form action="{{ url_for('admin_part.editLine') }}" method="post" enctype="multipart/form-data">
-{{ item.csrf_token() }}
-<tr>
-    <td>
-        {{item.index(hidden=true)}}
-        {{item.index.data}}
-    </td>
-    <td>
-        {% if item.state.data != 'WORKING' %}
-        {{item.title}}
-        {% else %}
-        {{item.title.data}}
-        {% endif %}
-    </td>
-    <td>
-        {% if item.state.data != 'WORKING' %}
-        {{item.celeb}}
-        {% else %}
-        {{item.celeb.data}}
-        {% endif %}
-    </td>
-    <td>
-        {{item.usr}}
-    </td>
-    <td>
-        {% if item.state.data != 'WORKING' %}
-        {{item.state}}
-        {% else %}
-        {{item.state.data}}
-        {% endif %}
-    </td>
-    <td>
-        <video width="320" height="240" controls>
-            <source src={{ url_for('static', filename=item.vid) }} type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
-    </td>
-    <td>
-        {% if item.state.data != 'WORKING' %}
-        <input type="submit" value="&#10004;" class="btn btn-success">
-        <!-- <a href="{{ url_for('admin_part.editLine', ind = item.index ) }}" class="btn btn-success">
-            <span class="glyphicon glyphicon-ok"></span> Trash
-        </a> -->
-        {% endif %}
-    </td>
+<!-- <div class='container w'> -->
+<div class='row justify-content-around ml-md-auto'>
+    <form action="{{ url_for('admin_part.editLine') }}" method="post" enctype="multipart/form-data">
+        {{ item.csrf_token() }}
 
-    <td>
-        {% if item.state.data != 'WORKING' %}
-        <a href="{{ url_for('admin_part.deleteLine', ind = item.index.data ) }}" class="btn btn-danger">
-            <span class="glyphicon glyphicon-trash"></span>
-        </a>
-        {% endif %}
-    </td>
-    <td>
-        {% if item.state.data == 'DONE' %}
-        <a href="{{item.resUrl}}" class="btn btn-primary" target="_blank">
-            watch here
-        </a>
-        {% endif %}
-    </td>
+        <!-- <div class="col col-md-1 col-xs-1">
+            {{item.index(hidden=true)}}
+            {{item.index.data}}
+        </div> -->
+        <div class="col-md-2 col-xs-6 align-items-center">
+            {{item.index(hidden=true)}}
+            {{item.index.data}}
 
-</tr>
-</form>
+            {% if item.state.data != 'WORKING' %}
+            {{item.title}}
+            {% else %}
+            {{item.title.data}}
+            {% endif %}
+        </div>
+        <div class="col col-md-2 col-xs-4">
+            {% if item.state.data != 'WORKING' %}
+            {{item.celeb}}
+            {% else %}
+            {{item.celeb.data}}
+            {% endif %}
+        </div>
+        <div class="col col-md-2 col-xs-4">
+            {% if item.state.data != 'WORKING' %}
+            {{item.state}}
+            {% else %}
+            {{item.state.data}}
+            {% endif %}
+        </div>
+        <div class="col col-md-3 col-xs-7">
+            <a data-toggle="collapse" data-target="#demo-{{item.index.data}}" style="width:100%">
+                video </a>
+            <div id="demo-{{item.index.data}}" class="collapse">
+                <video width="320" height="240" controls>
+                    <source src={{ url_for('static', filename=item.vid) }} type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+        <div class="col col-md-1 col-xs-1">
+            {% if item.state.data != 'WORKING' %}
+            <input type="submit" value="&#10004;" class="btn btn-success">
+            {% endif %}
+        </div>
+
+        <div class="col col-md-1 col-xs-1">
+            {% if item.state.data != 'WORKING' %}
+            <a href="{{ url_for('admin_part.deleteLine', ind = item.index.data ) }}" class="btn btn-danger">
+                <span class="glyphicon glyphicon-trash"></span>
+            </a>
+            {% endif %}
+        </div>
+        <div class="col col-md-1 col-xs-1">
+            {% if item.state.data == 'DONE' %}
+            <a href="{{item.resUrl}}" class="btn btn-primary" target="_blank">
+                watch here
+            </a>
+            {% endif %}
+        </div>
+        <div class="col-xs-1">
+            {{item.usr}}
+        </div>
+    </form>
+</div>
+<!-- </div> -->
 {%- endmacro %}

@@ -1,7 +1,7 @@
 import sys
 #sys.path.insert(1, 'C:/DeepFun_v2/DeepFaceLab_NVIDIA')
 import subprocess
-from DFM_dm import test, saveInQueue
+from DFM_dm import saveInQueue
 
 def doURL (celeb, vidUrl) :
     print ('>>> doURL! ' + celeb + ' ' + vidUrl)

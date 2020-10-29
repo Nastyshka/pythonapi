@@ -20,9 +20,9 @@ from operator import itemgetter
 chrome_path = "C:/Users/rober/Desktop/chromedriver.exe"
 
 celebs = ["daisy ridley", "emma stone", "gal gadot", "K AOA CHANMI", "emma watson"] # list of celebs (another one)
-CELEB_CHOISES = [('K APINK NAEUN','K APINK NAEUN'), ('K BLACKPINK JENNIE', 'K BLACKPINK JENNIE'),
- ('K IU','K IU'), ('K MISS A SUZY', 'K MISS A SUZY'), ('K RED VELVET IRENE', 'K RED VELVET IRENE'), ('K RED VELVET WENDY', 'K RED VELVET WENDY')
- , ('K TWICE MOMO', 'K TWICE MOMO'), ('K TWICE TZUYU', 'K TWICE TZUYU')] #Add celebrities here
+# CELEB_CHOISES = [('K APINK NAEUN','K APINK NAEUN'), ('K BLACKPINK JENNIE', 'K BLACKPINK JENNIE'),
+#  ('K IU','K IU'), ('K MISS A SUZY', 'K MISS A SUZY'), ('K RED VELVET IRENE', 'K RED VELVET IRENE'), ('K RED VELVET WENDY', 'K RED VELVET WENDY')
+#  , ('K TWICE MOMO', 'K TWICE MOMO'), ('K TWICE TZUYU', 'K TWICE TZUYU')] #Add celebrities here
 
 STATE_CHOISES = [('3 REVIEW','REVIEW'), ('2 APPROVED', 'APPROVED'),
  ('1 WORKING','WORKING'), ('4 DONE', 'DONE')] #Add states here
@@ -33,18 +33,19 @@ scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/aut
 creds = ServiceAccountCredentials.from_json_keyfile_name('adfdfm-bf958f34c7c0.json', scope)
 client = gspread.authorize(creds)
 
-sheet = client.open('ADFDFMQueue').get_worksheet(0)
+sheet = client.open('ADFDFMQueue').get_worksheet(2)
+sheetCeleb = client.open('ADFDFMQueue').get_worksheet(1)
 
-def test(user,videoName,celebrityNum):
-    sheet.delete_row(1)
-    titles = sheet.col_values(1)
+# def test(user,videoName,celebrityNum):
+#     sheet.delete_row(1)
+#     titles = sheet.col_values(1)
     
-    sheet.update('H1', len(titles))
+#     sheet.update('H1', len(titles))
     
-    sheet.update('A'+str(len(titles)+1), user)
-    sheet.update('B'+str(len(titles)+1), videoName)
-    # sheet.update('C'+str(len(titles)+1), celebs[celebrityNum-1])
-    sheet.update('C'+str(len(titles)+1), celebrityNum)
+#     sheet.update('A'+str(len(titles)+1), user)
+#     sheet.update('B'+str(len(titles)+1), videoName)
+#     # sheet.update('C'+str(len(titles)+1), celebs[celebrityNum-1])
+#     sheet.update('C'+str(len(titles)+1), celebrityNum)
 
 def saveInQueue(title, videoName, celebrityNum, usr):
     qSize = sheet.row_count
@@ -105,3 +106,19 @@ def sortSheetData () :
     sheet.clear()
     sheet.append_rows(allSorted)   
     return allSorted
+
+def getCelebs ():
+    print('>>> get celebs >  ')
+    allcelebs = sheetCeleb.get_all_values()
+    celbCoises = []
+    i=0
+    while i < len(allcelebs):
+        val = allcelebs[i]
+        print('>>> celeb ' + str(val[0]))
+        celbCoises.append((val[0], val[0]))
+        i+=1
+    print(celbCoises)
+
+    # global CELEB_CHOISES
+    # CELEB_CHOISES = celbCoises
+    return celbCoises

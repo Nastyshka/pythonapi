@@ -12,12 +12,12 @@ import os
 import threading
 from werkzeug.utils import secure_filename
 from someScript import doFile, doURL, doFileTime, doURLTime
-from DFM_dm import findUsrInQueue, getAllInQueue, deleteFromQueue, editQueueLine, celebs, CELEB_CHOISES, STATE_CHOISES,sortSheetData
+from DFM_dm import findUsrInQueue, getAllInQueue, deleteFromQueue, editQueueLine, celebs, getCelebs, STATE_CHOISES, sortSheetData
 
-
+CELEB_CHOISES = getCelebs()
 class QItem (FlaskForm):
     index = IntegerField(u'Idex')
-    title = TextField(u'Title')
+    title = TextAreaField(u'Title')
     celeb = SelectField(u'Celeb', choices=CELEB_CHOISES)
     vid = TextField(u'video')
     usr = TextField(u'User')
@@ -53,17 +53,18 @@ def daminView():
         qi = QItem()
         qi.index.data = i+1
         qi.title.data = it[0]
+        print(it[0])
 
         qi.celeb.data = it[2]
         qi.vid.data = it[1]
         qi.usr = it[3]
         qi.state.data = it[4]
-        qi.resUrl = it[5]
+        if (len(it) >= 6):
+            qi.resUrl = it[5]
         q.append(qi)
 
         # print( it[0])
         # print( it[1])
-        print( '>>>> res url >' + it[5])
         i+=1
 
     return render_template('admin.html', items=q)
@@ -105,8 +106,8 @@ def queueForUsersView():
         it = allInQ[i]
         #q.append(QItem(i+1, it[0], it[1], it[2], it[3]))
         qi = QItem()
-        qi.index.data = i+1
-        qi.title.data = it[0]
+        qi.index.data = it[0]
+        qi.title.data = it[1]
 
         qi.celeb.data = it[2]
         qi.vid.data = it[1]
