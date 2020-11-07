@@ -65,7 +65,7 @@ def deleteFromQueue(index):
 def findUsrInQueue (usr): 
     try :
         cell = sheet.find(usr)
-        print('>>>> found  > ' + str(cell.row))
+        print('>>>> found  > ' + str(cell))
         return cell.row
     except gspread.exceptions.CellNotFound:
         print('>>>> not found  > ' + usr)

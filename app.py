@@ -31,17 +31,18 @@ UPLOADS_FOLDER = '/var/www/FlaskApp/FlaskApp/flask/uploads/'
 
 #The input form
 class SomeForm (FlaskForm):
-    theceleb = SelectField(u'Celebrity', choices=getCelebs())
+    theceleb = SelectField(u'Celebrity', choices=getCelebs(), validators=[DataRequired()])
+    theFile = FileField('theFile', validators=[DataRequired(), FileAllowed(VIDEO_EXT, 'Bad File Type')])
+    theDesc = TextAreaField(u'Description', validators=[Optional()])
+    theTags = SelectMultipleField(u'Tags', choices=TAGS_CHOISES, validators=[Optional()])
+    theUsr = HiddenField(u'Usr')
+    theTitle = TextField(u'Title', validators=[DataRequired()])
+    
     theURL = URLField ('Video fron URL', validators=[Optional()])
     theStartMin = IntegerField ('Start Min', validators=[Optional(), NumberRange(min=0, max=59)])
     theStartSec = IntegerField ('Start Sec', validators=[Optional(),NumberRange(min=0, max=59)])
     theEndMin = IntegerField('End Min', validators=[Optional(),NumberRange(min=0, max=59)])
     theEndSec = IntegerField ('Start Sec', validators=[Optional(),NumberRange(min=0, max=59)])
-    theFile = FileField('theFile', validators=[Optional(), FileAllowed(VIDEO_EXT, 'Bad File Type')])
-    theDesc = TextAreaField(u'Description', validators=[Optional()])
-    theTags = SelectMultipleField(u'Tags', choices=TAGS_CHOISES, validators=[Optional()])
-    theUsr = HiddenField(u'Usr')
-    theTitle = TextField(u'Title', validators=[Optional()])
 
 class ResForm (FlaskForm):
     theQuality = IntegerRangeField ('Is it good? ', default=3, validators=[Optional(),NumberRange(min=0, max=5)])
@@ -56,8 +57,6 @@ def someForm(usr = '1'):
     if request.method == 'POST' and form.validate(): 
        
         print('>>> description > ' + form.theUsr.data)
-        if not allowed_site(form.theURL.data):
-            form.theURL.errors.append("This site is not allowed") #Check allowed sites
     if form.validate_on_submit(): #If form is valid
         print('>>> description > ' + form.theDesc.data)
         print(form.theTags.data)
@@ -90,8 +89,9 @@ def someForm(usr = '1'):
         return 'nice! {} come back and check in 5 hours'.format(form.theceleb.data)
     if (indexInQueue >= 0) : 
         return render_template('videoIsInProgress.html', currStep = 1, indexInQueue = indexInQueue)
-    elif (videoIsREadyToCheck == True):
-        return redirect(url_for('showRes', usr = usr))
+    #//TODO: Video is ready to check
+    # elif (videoIsREadyToCheck == True):
+    #     return redirect(url_for('showRes', usr = usr))
     else :    
         form.theUsr.data = usr
         print( '>> the usr is > ' + form.theUsr.data)
@@ -99,14 +99,17 @@ def someForm(usr = '1'):
     
 @app.route('/res/<usr>', methods = ['GET', 'POST']) 
 def showRes(usr = '1'):
+
+    res = findUsrInQueue(usr)
     rform = ResForm()
-    rform.resUrl = resUrl
-    rform.theUsr = usr
-    if rform.validate_on_submit():
-        print('>>> quality ' + rform.theQuality.data )
-        global videoIsREadyToCheck
-        videoIsREadyToCheck = False
-        return redirect(url_for('someForm'))
+    print('>>> ' + str(res))
+    # rform.resUrl = resUrl
+    # rform.theUsr = usr
+    # if rform.validate_on_submit():
+    #     print('>>> quality ' + rform.theQuality.data )
+    #     global videoIsREadyToCheck
+    #     videoIsREadyToCheck = False
+    #     return redirect(url_for('someForm'))
     return render_template('result.html', form = rform)
 
 @app.route('/done/<vid>/<vidurl>')  

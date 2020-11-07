@@ -23,17 +23,16 @@ Python form
 			</div>
 
 			<div class="custom-file form-group ">
-				<div class="col-xs-6">
+				<div class="col-md-6 col-xs-12">
 					{{wtf.form_field(form.theDesc)}}
 				</div>
-				<div class="col-xs-6">
+				<div class="col-md-6 col-xs-12">
 					{{wtf.form_field(form.theTags)}}
 				</div>
 			</div>
 
-			<div class="form-group ">
+			<!-- <div class="form-group ">
 				<div class="col-xs-12">
-					<!-- <label class="font-weight-bold font-italic text-info"> Get Video fron URL </label> -->
 					{{ wtf.form_field(form.theURL) }}
 				</div>
 				<div class="col-xs-6">{{ wtf.form_field(form.theStartMin) }}
@@ -41,22 +40,24 @@ Python form
 				<div class="col-xs-6">
 					{{ wtf.form_field(form.theEndMin) }}{{ wtf.form_field(form.theEndSec) }}
 				</div>
-			</div>
+			</div> -->
 			<br />
 
 			<div class="custom-file form-group ">
 				<div class="col-xs-12">
-					<label class="font-weight-bold font-italic text-info"> Upload file </label>
-					<input type="file" name="theFile" label="theFile" class="custom-file-input" id="inputGroupFile01">
+					<label class=" font-weight-bold font-italic text-info "> Upload file </label>
+					<input type="file" name="theFile" label="theFile" style="border-width: 1px; border-color: grey; 
+					padding-left: 0;padding-top: 2rem;padding-bottom: 2rem;padding-right: 2rem;" id="inputGroupFile01"
+						class="form-control">
 					{% for error in form.theFile.errors %}
 					<small class="text-danger">{{ error }}</small>
 					{% endfor %}
 					</imput>
 				</div>
 			</div>
-			<br/>
-			<div class="custom-file form-group ">
-				<div class="col-xs-12">
+			<br />
+			<div class="custom-file form-group" style="padding-top: 2rem;">
+				<div class="col-xs-12" style="padding-top: 2rem;">
 					<input type="submit" value="Submit" class="btn btn-primary">
 				</div>
 			</div>
