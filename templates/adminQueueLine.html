@@ -13,7 +13,7 @@
         </div> -->
             <div class="col-md-2 col-xs-6 align-items-center font-weight-bold align-top" style="padding: 0 !important;">
                 {{item.index(hidden=true)}}
-                <span class="font-weight-bold align-text-top" style="font-size: 2.5rem;">
+                <span class="font-weight-bold align-text-top" >
                     {{item.index.data}}
                 </span>
                 {% if item.state.data != 'WORKING' %}
@@ -36,7 +36,7 @@
                 {{item.state.data}}
                 {% endif %}
             </div>
-            <div class="col col-md-3 col-xs-7">
+            <div class="col col-md-3 col-xs-12">
                 <a data-toggle="collapse" data-target="#demo-{{item.index.data}}" style="width:100%">
                     video </a>
                 <div id="demo-{{item.index.data}}" class="collapse">
@@ -59,15 +59,17 @@
                 </a>
                 {% endif %}
             </div>
+        
+            <div class="col-xs-1">
+                {{item.usr}}
+            </div>
+
             <div class="col col-md-1 col-xs-1">
                 {% if item.state.data == 'DONE' %}
                 <a href="{{item.resUrl}}" class="btn btn-primary" target="_blank">
                     watch here
                 </a>
                 {% endif %}
-            </div>
-            <div class="col-xs-1">
-                {{item.usr}}
             </div>
         </form>
     </div>

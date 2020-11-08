@@ -106,14 +106,15 @@ def queueForUsersView():
         it = allInQ[i]
         #q.append(QItem(i+1, it[0], it[1], it[2], it[3]))
         qi = QItem()
-        qi.index.data = it[0]
-        qi.title.data = it[1]
+        qi.index.data = i+1
+        qi.title.data = it[0]
 
         qi.celeb.data = it[2]
         qi.vid.data = it[1]
         qi.usr = it[3]
         qi.state.data = it[4]
-        qi.resUrl = it[5]
+        if (len(it) > 5) :
+            qi.resUrl = it[5]
         q.append(qi)
 
         # print( it[0])
