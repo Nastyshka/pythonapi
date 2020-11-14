@@ -26,8 +26,8 @@ TAGS_CHOISES = [('tag 1','tag 1'), ('tag 2','tag 2'), ('tag 3','tag 3')]
 ALLOWED_SITES = ['porn.com', 'www.moreporn.com', 'http://localhost:5000'] #Add sites here
 VIDEO_EXT = ['WEBM', 'MP4', 'mp4', 'AVI', 'csv', 'wsdl']
 #UPLOADS_FOLDER = 'C:\\DeepFun_v1\\DeepFaceLab_CUDA\\workspace\\newData_dst'
-UPLOADS_FOLDER = '/var/www/FlaskApp/FlaskApp/flask/uploads/'
-# UPLOADS_FOLDER = 'uploads/'
+# UPLOADS_FOLDER = '/var/www/FlaskApp/FlaskApp/flask/uploads/'
+UPLOADS_FOLDER = 'uploads/'
 
 #The input form
 class SomeForm (FlaskForm):
@@ -86,9 +86,11 @@ def someForm(usr = '1'):
         else :
             return 'Not enough data to start'
         
-        return 'nice! {} come back and check in 5 hours'.format(form.theceleb.data)
-    if (indexInQueue >= 0) : 
-        return render_template('videoIsInProgress.html', currStep = 1, indexInQueue = indexInQueue)
+        #When request submitted show the queue
+        return redirect(url_for('admin_part.queueForUsersView'))
+    if (indexInQueue >= 0) : #If user is already in the queue => show his place
+        return redirect(url_for('admin_part.queueForUsersView'))
+       
     #//TODO: Video is ready to check
     # elif (videoIsREadyToCheck == True):
     #     return redirect(url_for('showRes', usr = usr))
@@ -118,28 +120,6 @@ def videoIsDone(vid='', vidurl=''):
         setDoneWithUrl(vid, vidurl)
     return 'Nice! the video is done'
 
-# @app.route('/done/<vidurl>')  
-# def videoIsDone(vidurl=''):
-    # global videoIsInProgress 
-    # videoIsInProgress = False
-    # global currentProcessStep
-    # currentProcessStep = 0
-    # global videoIsREadyToCheck
-    # videoIsREadyToCheck = True
-    # if (vidurl != ''):
-    #     global resUrl
-    #     resUrl = siteUrl + vidurl
-    
-    # return 'Nice! the video is done'
-
-# @app.route('/setstep/<stepNo>')
-# def updateCurrentStep (stepNo = 0):
-
-#     print('>>> current step is set ' + stepNo)
-#     global currentProcessStep
-#     currentProcessStep = stepNo
-#     return 'Current step was updated {}'.format(stepNo)
-    
 @app.route('/setstate/<vid>/<state>')
 def updateCurrentStep (vid='', state=''):
     if (vid != '' and state != '') :
