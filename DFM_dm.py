@@ -35,6 +35,7 @@ client = gspread.authorize(creds)
 
 sheet = client.open('ADFDFMQueue').get_worksheet(2)
 sheetCeleb = client.open('ADFDFMQueue').get_worksheet(1)
+sheetTags = client.open('ADFDFMQueue').get_worksheet(3)
 
 # def test(user,videoName,celebrityNum):
 #     sheet.delete_row(1)
@@ -47,11 +48,11 @@ sheetCeleb = client.open('ADFDFMQueue').get_worksheet(1)
 #     # sheet.update('C'+str(len(titles)+1), celebs[celebrityNum-1])
 #     sheet.update('C'+str(len(titles)+1), celebrityNum)
 
-def saveInQueue(title, videoName, celebrityNum, usr):
+def saveInQueue(title, videoName, celebrityNum, usr, tags):
     qSize = sheet.row_count
     print ( qSize)
     print ('>>> saveInQueue  > ' + title + ' > ' + videoName + ' > ' + usr + ' > ' + celebrityNum) 
-    row = [title, videoName, celebrityNum, usr, '3 REVIEW']
+    row = [title, videoName, celebrityNum, usr, '3 REVIEW', tags]
     sheet.append_row(row)
     print ('>>> saveInQueue  > ' + str(qSize) + ' > ' + str(sheet.row_count))
     sortSheetData()
@@ -114,11 +115,17 @@ def getCelebs ():
     i=0
     while i < len(allcelebs):
         val = allcelebs[i]
-        print('>>> celeb ' + str(val[0]))
         celbCoises.append((val[0], val[0]))
         i+=1
-    print(celbCoises)
-
-    # global CELEB_CHOISES
-    # CELEB_CHOISES = celbCoises
     return celbCoises
+
+def getTags ():
+    print('>>> get tags >  ')
+    allTags = sheetTags.get_all_values()
+    tagCoises = []
+    i=0
+    while i < len(allTags):
+        val = allTags[i]
+        tagCoises.append((val[0], val[0]))
+        i+=1
+    return tagCoises

@@ -12,9 +12,10 @@ import os
 import threading
 from werkzeug.utils import secure_filename
 from someScript import doFile, doURL, doFileTime, doURLTime
-from DFM_dm import findUsrInQueue, getAllInQueue, deleteFromQueue, editQueueLine, celebs, getCelebs, STATE_CHOISES, sortSheetData
+from DFM_dm import findUsrInQueue, getAllInQueue, deleteFromQueue, editQueueLine, celebs, getCelebs, STATE_CHOISES, sortSheetData, getTags
 
 CELEB_CHOISES = getCelebs()
+TAG_CHOISES = getTags()
 class QItem (FlaskForm):
     index = IntegerField(u'Idex')
     title = TextAreaField(u'Title')
@@ -22,14 +23,7 @@ class QItem (FlaskForm):
     vid = TextField(u'video')
     usr = TextField(u'User')
     state = SelectField(u'State', choices=STATE_CHOISES)
-
-    # def __init__(self, i, t, v, c, u):
-    #     self.index.data = i
-    #     self.title.data = t
-    #     self.celeb.data = c
-    #     self.vid.data = v
-    #     self.usr.data = u
-
+    tags = SelectMultipleField(u'State', choices=TAG_CHOISES)
 
 admin_part = Blueprint('admin_part', __name__, template_folder='templates')
 
@@ -41,15 +35,12 @@ def sort ():
 
 @admin_part.route('/admin')
 def daminView():   
-    # jsonify(getAllInQueue()
     print('>>>> admin >')
     q = []
     allInQ = getAllInQueue()
-    #for it in getAllInQueue():
     i = 0
     while i < len(allInQ):
         it = allInQ[i]
-        #q.append(QItem(i+1, it[0], it[1], it[2], it[3]))
         qi = QItem()
         qi.index.data = i+1
         qi.title.data = it[0]
@@ -59,12 +50,11 @@ def daminView():
         qi.vid.data = it[1]
         qi.usr = it[3]
         qi.state.data = it[4]
-        if (len(it) >= 6):
-            qi.resUrl = it[5]
-        q.append(qi)
+        qi.tags.data = it[5]
 
-        # print( it[0])
-        # print( it[1])
+        if (len(it) > 6) :
+            qi.resUrl = it[6]
+        q.append(qi)
         i+=1
 
     return render_template('admin.html', items=q)
@@ -96,15 +86,13 @@ def editLine ():
 
 @admin_part.route('/queueForUsers')
 def queueForUsersView():
-    # jsonify(getAllInQueue()
     print('>>>> queueForUsers >')
     q = []
     allInQ = getAllInQueue()
-    #for it in getAllInQueue():
+
     i = 0
     while i < len(allInQ):
         it = allInQ[i]
-        #q.append(QItem(i+1, it[0], it[1], it[2], it[3]))
         qi = QItem()
         qi.index.data = i+1
         qi.title.data = it[0]
@@ -113,13 +101,11 @@ def queueForUsersView():
         qi.vid.data = it[1]
         qi.usr = it[3]
         qi.state.data = it[4]
-        if (len(it) > 5) :
-            qi.resUrl = it[5]
-        q.append(qi)
+        qi.tags.data = it[5]
 
-        # print( it[0])
-        # print( it[1])
-        # print( it[3])
+        if (len(it) > 6) :
+            qi.resUrl = it[6]
+        q.append(qi)
         i+=1
 
     return render_template('queueForUsers.html', items=q)

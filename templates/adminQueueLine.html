@@ -29,14 +29,14 @@
                 {{item.celeb.data}}
                 {% endif %}
             </div>
-            <div class="col col-md-2 col-xs-4">
+            <div class="col col-md-1 col-xs-4">
                 {% if item.state.data != 'WORKING' %}
                 {{item.state}}
                 {% else %}
                 {{item.state.data}}
                 {% endif %}
             </div>
-            <div class="col col-md-3 col-xs-12">
+            <div class="col col-md-2 col-xs-12">
                 <a data-toggle="collapse" data-target="#demo-{{item.index.data}}" style="width:100%">
                     video </a>
                 <div id="demo-{{item.index.data}}" class="collapse">
@@ -46,6 +46,15 @@
                     </video>
                 </div>
             </div>
+
+            <div class="col col-md-1 col-xs-12">
+                {% if item.state.data != 'WORKING' %}
+                {{item.tags}}
+                {% else %}
+                {{item.tags.data}}
+                {% endif %}
+            </div>
+
             <div class="col col-md-1 col-xs-1">
                 {% if item.state.data != 'WORKING' %}
                 <input type="submit" value="&#10004;" class="btn btn-success">
@@ -65,11 +74,13 @@
             </div>
 
             <div class="col col-md-1 col-xs-1">
-                {% if item.state.data == 'DONE' %}
+                <!-- {% if item.state.data == 'DONE' %} -->
+                watch here
+                {{item.resUrl}}
                 <a href="{{item.resUrl}}" class="btn btn-primary" target="_blank">
-                    watch here
+                    {{item.resUrl}}
                 </a>
-                {% endif %}
+                <!-- {% endif %} -->
             </div>
         </form>
     </div>

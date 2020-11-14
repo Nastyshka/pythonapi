@@ -1,0 +1,56 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% macro queueLine(item, value='', type='Form') -%}
+<!-- <div class='container w'> -->
+<div class="card ">
+    <div class='row justify-content-around ml-md-auto card-body'
+        style="padding:1rem; {% if item.index.data%2 == 0 %}background: lightgrey;{% endif %}">
+        <form action="{{ url_for('admin_part.editLine') }}" method="post" enctype="multipart/form-data">
+            {{ item.csrf_token() }}
+            <div class="col-md-1 col-xs-1 align-items-center font-weight-bold align-top">
+                {{item.index(hidden=true)}}
+                <span class="font-weight-bold align-text-top" >
+                    {{item.index.data}}
+                </span>
+            </div>
+            <div class="col-md-3 col-xs-10 align-items-center font-weight-bold align-top" style="padding: 0 !important;">
+                {{item.title.data}}
+
+            </div>
+            <div class="col col-md-2 col-xs-6">
+
+                {{item.celeb.data}}
+
+            </div>
+            <div class="col col-md-2 col-xs-6">
+
+                {{item.state.data}}
+
+            </div>
+            <div class="col col-md-3 col-xs-12">
+                <a data-toggle="collapse" data-target="#demo-{{item.index.data}}" style="width:100%">
+                    video </a>
+                <div id="demo-{{item.index.data}}" class="collapse">
+                    <video width="320" height="240" controls>
+                        <source src={{ url_for('static', filename=item.vid) }} type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+
+            <div class="col-xs-1">
+                {{item.usr}}
+            </div>
+            
+            <div class="col col-md-1 col-xs-1">
+                {% if item.state.data == 'DONE' %}
+                <a href="{{item.resUrl}}" class="btn btn-primary" target="_blank">
+                    watch here
+                </a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+{%- endmacro %}

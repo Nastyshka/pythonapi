@@ -12,7 +12,7 @@ import os
 import threading
 from werkzeug.utils import secure_filename
 from someScript import doFile, doURL, doFileTime, doURLTime
-from DFM_dm import findUsrInQueue, getCelebs, setVidState, setDoneWithUrl, sortSheetData
+from DFM_dm import findUsrInQueue, getCelebs, setVidState, setDoneWithUrl, sortSheetData, getTags
 from admin import admin_part
 
 app = Flask(__name__, static_folder='static')
@@ -22,7 +22,7 @@ Bootstrap(app)
 app.config['SECRET_KEY'] = 'do not tell anyone' 
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 10MB max-limit.
 
-TAGS_CHOISES = [('tag 1','tag 1'), ('tag 2','tag 2'), ('tag 3','tag 3')]
+# TAGS_CHOISES = [('tag 1','tag 1'), ('tag 2','tag 2'), ('tag 3','tag 3')]
 ALLOWED_SITES = ['porn.com', 'www.moreporn.com', 'http://localhost:5000'] #Add sites here
 VIDEO_EXT = ['WEBM', 'MP4', 'mp4', 'AVI', 'csv', 'wsdl']
 #UPLOADS_FOLDER = 'C:\\DeepFun_v1\\DeepFaceLab_CUDA\\workspace\\newData_dst'
@@ -34,7 +34,7 @@ class SomeForm (FlaskForm):
     theceleb = SelectField(u'Celebrity', choices=getCelebs(), validators=[DataRequired()])
     theFile = FileField('theFile', validators=[DataRequired(), FileAllowed(VIDEO_EXT, 'Bad File Type')])
     theDesc = TextAreaField(u'Description', validators=[Optional()])
-    theTags = SelectMultipleField(u'Tags', choices=TAGS_CHOISES, validators=[Optional()])
+    theTags = SelectMultipleField(u'Tags', choices=getTags(), validators=[Optional()])
     theUsr = HiddenField(u'Usr')
     theTitle = TextField(u'Title', validators=[DataRequired()])
     
@@ -65,24 +65,15 @@ def someForm(usr = '1'):
             res = saveTheFile(form)
             #Start processing
             
-            print('>>>> save to gsheet > ' + form.theUsr.data)
+            print('>>>> save to gsheet > ' + str(form.theTags.data))
             threading.Thread(target=
             doFile(
                 form.theTitle.data,
                 form.theceleb.data,
                 str(res), 
-                form.theUsr.data))
+                form.theUsr.data,
+                str(form.theTags.data)))
             #threading.Thread(target = doFile(form.theceleb.data)).start()
-        elif form.theURL.data != None :  
-            if form.theStartMin.data != None and form.theStartSec.data != None and form.theEndMin.data != None and form.theEndSec.data != None :
-                #Run downloader and cutter
-                threading.Thread(target=doURLTime(form.theceleb.data, form.theURL.data,form.theStartMin.data, form.theStartSec.data, form.theEndMin.data, form.theEndSec.data)).start()
-                print( '>> the URL is > ' + form.theURL.data)
-                print('>> cut between> {} : {} and {} : {}'.format (form.theStartMin.data, form.theStartSec.data, form.theEndMin.data, form.theEndSec.data))
-            else : 
-                print( '>> the ony URL is > ' + form.theURL.data)
-                #Run downloader
-                threading.Thread(target=doURL(form.theceleb.data, form.theURL.data)).start()
         else :
             return 'Not enough data to start'
         
