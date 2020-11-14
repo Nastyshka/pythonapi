@@ -10,6 +10,7 @@ from datetime import datetime
 
 import os
 import threading
+import ast
 from werkzeug.utils import secure_filename
 from someScript import doFile, doURL, doFileTime, doURLTime
 from DFM_dm import findUsrInQueue, getAllInQueue, deleteFromQueue, editQueueLine, celebs, getCelebs, STATE_CHOISES, sortSheetData, getTags
@@ -44,13 +45,16 @@ def daminView():
         qi = QItem()
         qi.index.data = i+1
         qi.title.data = it[0]
-        print(it[0])
 
         qi.celeb.data = it[2]
         qi.vid.data = it[1]
         qi.usr = it[3]
         qi.state.data = it[4]
-        qi.tags.data = it[5]
+        
+
+        if (len(it[5]) > 0):
+            qi.tags.data = ast.literal_eval(it[5])
+
 
         if (len(it) > 6) :
             qi.resUrl = it[6]
