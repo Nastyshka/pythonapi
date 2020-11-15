@@ -109,7 +109,6 @@ def sortSheetData () :
     return allSorted
 
 def getCelebs ():
-    print('>>> get celebs >  ')
     allcelebs = sheetCeleb.get_all_values()
     celbCoises = []
     i=0
@@ -120,7 +119,6 @@ def getCelebs ():
     return celbCoises
 
 def getTags ():
-    print('>>> get tags >  ')
     allTags = sheetTags.get_all_values()
     tagCoises = []
     i=0

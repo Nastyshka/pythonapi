@@ -14,6 +14,7 @@ from werkzeug.utils import secure_filename
 from someScript import doFile, doURL, doFileTime, doURLTime
 from DFM_dm import findUsrInQueue, getCelebs, setVidState, setDoneWithUrl, sortSheetData, getTags
 from admin import admin_part
+import requests
 
 app = Flask(__name__, static_folder='static')
 app.register_blueprint(admin_part)
@@ -126,6 +127,32 @@ def saveTheFile( form ):
         filename = secure_filename(file.filename)
         file.save( os.path.join(assets_dir, filename))
         return filename
+
+@app.route("/uploadFile/<filename>", methods = ['POST'])
+def fileUpl(filename = '') :
+    print ('>>>>> upload file > ' + str(request))
+    file = request.files['file']
+        # if file and allowed_file(file.filename):
+    print ('>>>> found file' + file.filename)
+    filename = secure_filename(file.filename)
+    assets_dir = os.path.join(os.path.dirname(app.instance_path), UPLOADS_FOLDER)
+    file.save(os.path.join(assets_dir, filename))
+            # for browser, add 'redirect' function on top of 'url_for'
+    return 'saved'
+
+@app.route("/send", methods = ['GET'])
+def sendFile () :
+    print('>>>> send file > ')
+    url = "http://localhost:5000/uploadFile/fi.txt"
+    fin = open('todo.txt', 'rb')
+    files = {'file': fin}
+    try:
+        print(files)
+        r = requests.post(url, files=files)
+        print(r)
+    finally:
+	    fin.close()
+    return 'sent'
 
 #Download the file from server
 @app.route("/downloadfile/<filename>", methods = ['GET'])
