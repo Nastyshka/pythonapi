@@ -16,6 +16,7 @@ from DFM_dm import findUsrInQueue, getCelebs, setVidState, setDoneWithUrl, sortS
 from admin import admin_part
 import requests
 
+
 app = Flask(__name__, static_folder='static')
 app.register_blueprint(admin_part)
 Bootstrap(app)
