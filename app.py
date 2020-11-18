@@ -17,7 +17,7 @@ from admin import admin_part
 import requests
 
 
-app = Flask(__name__, static_folder='static')
+app = Flask(__name__, static_folder='/var/www/FlaskApp/FlaskApp/flask/static/')
 app.register_blueprint(admin_part)
 Bootstrap(app)
 
@@ -28,8 +28,8 @@ app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 10MB max-limit.
 ALLOWED_SITES = ['porn.com', 'www.moreporn.com', 'http://localhost:5000'] #Add sites here
 VIDEO_EXT = ['WEBM', 'MP4', 'mp4', 'AVI', 'csv', 'wsdl']
 #UPLOADS_FOLDER = 'C:\\DeepFun_v1\\DeepFaceLab_CUDA\\workspace\\newData_dst'
-# UPLOADS_FOLDER = '/var/www/FlaskApp/FlaskApp/flask/uploads/'
-UPLOADS_FOLDER = 'uploads/'
+UPLOADS_FOLDER = '/var/www/FlaskApp/FlaskApp/flask/static/'
+#UPLOADS_FOLDER = 'uploads/'
 
 #The input form
 class SomeForm (FlaskForm):
@@ -135,6 +135,7 @@ def fileUpl(filename = '') :
     file = request.files['file']
         # if file and allowed_file(file.filename):
     print ('>>>> found file' + file.filename)
+    print (request.files['file'])
     filename = secure_filename(file.filename)
     assets_dir = os.path.join(os.path.dirname(app.instance_path), UPLOADS_FOLDER)
     file.save(os.path.join(assets_dir, filename))
@@ -144,7 +145,7 @@ def fileUpl(filename = '') :
 @app.route("/send", methods = ['GET'])
 def sendFile () :
     print('>>>> send file > ')
-    url = "http://localhost:5000/uploadFile/fi.txt"
+    url = "http://37.252.8.234:5000/uploadFile/fi.txt"
     fin = open('todo.txt', 'rb')
     files = {'file': fin}
     try:
